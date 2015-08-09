@@ -3,13 +3,15 @@
 doarama is a command line interface to the [Doarama GPS visualiszation
 platform](http://www.doarama.com/).
 
-## How to create a visualisation URL of single activity
+# How to set your Doarama API credentials and user id
 
-Set your Doarama API credentials and user id:
+You must set your Doarama API credentials before running the `doarama` command.
 
     $ export DOARAMA_API_KEY="Your Doarama API key"
     $ export DOARAMA_API_NAME="Your Doarama API name"
     $ export DOARAMA_USER_ID="Your Doarama user id"
+
+## How to create a visualisation URL of single activity
 
 Upload an activity and set its [activity type
 id](https://api.doarama.com/api/0.2/activityType):
