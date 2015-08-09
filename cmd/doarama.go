@@ -31,6 +31,29 @@ func newAuthenticatedDoaramaClient(c *cli.Context) (*doarama.Client, error) {
 	}
 }
 
+func newVisualisationURLOptions(c *cli.Context) *doarama.VisualisationURLOptions {
+	var vuo doarama.VisualisationURLOptions
+	if c.StringSlice("name") != nil {
+		vuo.Names = c.StringSlice("name")
+	}
+	if c.StringSlice("avatar") != nil {
+		vuo.Avatars = c.StringSlice("avatar")
+	}
+	if c.String("avatarbaseurl") != "" {
+		vuo.AvatarBaseURL = c.String("avatarbaseurl")
+	}
+	if c.Bool("fixedaspect") {
+		vuo.FixedAspect = c.Bool("fixedaspect")
+	}
+	if c.Bool("minimalview") {
+		vuo.MinimalView = c.Bool("minimalview")
+	}
+	if c.String("dzml") != "" {
+		vuo.DZML = c.String("dzml")
+	}
+	return &vuo
+}
+
 func activityCreateOne(client *doarama.Client, filename string) (*doarama.Activity, error) {
 	gpsTrack, err := os.Open(filename)
 	if err != nil {
@@ -142,28 +165,10 @@ func visualisationDelete(c *cli.Context) error {
 
 func visualisationURL(c *cli.Context) error {
 	client := newDoaramaClient(c)
+	vuo := newVisualisationURLOptions(c)
 	for _, arg := range c.Args() {
 		v := client.Visualisation(arg)
-		var vuo doarama.VisualisationURLOptions
-		if c.StringSlice("name") != nil {
-			vuo.Names = c.StringSlice("name")
-		}
-		if c.StringSlice("avatar") != nil {
-			vuo.Avatars = c.StringSlice("avatar")
-		}
-		if c.String("avatarbaseurl") != "" {
-			vuo.AvatarBaseURL = c.String("avatarbaseurl")
-		}
-		if c.Bool("fixedaspect") {
-			vuo.FixedAspect = c.Bool("fixedaspect")
-		}
-		if c.Bool("minimalview") {
-			vuo.MinimalView = c.Bool("minimalview")
-		}
-		if c.String("dzml") != "" {
-			vuo.DZML = c.String("dzml")
-		}
-		fmt.Printf("VisualisationURL: %s\n", v.URL(&vuo))
+		fmt.Printf("VisualisationURL: %s\n", v.URL(vuo))
 	}
 	return nil
 }
