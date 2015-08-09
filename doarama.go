@@ -72,7 +72,7 @@ type Visualisation struct {
 	Key string `json:"key"`
 }
 
-// Type VisualisationURLOptions represents that options that can be set for a visualisation URL.
+// Type VisualisationURLOptions represents the options that can be set for a visualisation URL.
 type VisualisationURLOptions struct {
 	Names         []string
 	Avatars       []string
