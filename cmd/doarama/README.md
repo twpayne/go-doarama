@@ -5,7 +5,7 @@ platform](http://www.doarama.com/).  Install it with:
 
     $ go get github.com/twpayne/go-doarama/cmd/dorama
 
-# How to set your Doarama API credentials and user id
+## How to set your Doarama API credentials and user id
 
 You must set your Doarama API credentials before running the `doarama` command.
 
