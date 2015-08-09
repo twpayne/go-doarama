@@ -47,8 +47,6 @@ type ActivityInfo struct {
 type Activity struct {
 	c                 *Client
 	Id                int
-	InfoURL           string
-	AuthorURL         string
 	altitudeReference string
 }
 
@@ -217,18 +215,14 @@ func (c *Client) CreateActivity(filename string, gpsTrack io.Reader) (*Activity,
 	}
 	req.Header.Set("Content-Type", w.FormDataContentType())
 	data := struct {
-		Id        int    `json:"id"`
-		InfoURL   string `json:"infoUrl"`
-		AuthorURL string `json:"authorUrl"`
+		Id int `json:"id"`
 	}{}
 	if err := c.doRequest(req, &data); err != nil {
 		return nil, err
 	}
 	return &Activity{
-		c:         c,
-		Id:        data.Id,
-		InfoURL:   data.InfoURL,
-		AuthorURL: data.AuthorURL,
+		c:  c,
+		Id: data.Id,
 	}, nil
 }
 
