@@ -9,4 +9,4 @@ documentation](https://api.doarama.com/api/0.2/docs) before using this library.
 You can view the API documentation at
 https://godoc.org/github.com/twpayne/go-doarama.
 
-It includes a [command line interface](cmd/).
+It includes a [command line interface](cmd/dorama/).

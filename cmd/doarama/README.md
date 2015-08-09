@@ -1,7 +1,9 @@
 # doarama.go
 
 doarama is a command line interface to the [Doarama GPS visualiszation
-platform](http://www.doarama.com/).
+platform](http://www.doarama.com/).  Install it with:
+
+    $ go get github.com/twpayne/go-doarama/cmd/dorama
 
 # How to set your Doarama API credentials and user id
 
