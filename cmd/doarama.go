@@ -213,6 +213,34 @@ func main() {
 			EnvVar: "DOARAMA_USER_KEY",
 		},
 	}
+	typeIdFlag := cli.IntFlag{
+		Name:  "typeid",
+		Usage: "Type ID",
+	}
+	nameFlag := cli.StringSliceFlag{
+		Name:  "name",
+		Usage: "Name",
+	}
+	avatarFlag := cli.StringSliceFlag{
+		Name:  "avatar",
+		Usage: "Avatar",
+	}
+	avatarBaseUrlFlag := cli.StringFlag{
+		Name:  "avatarbaseurl",
+		Usage: "Avatar base URL",
+	}
+	fixedAspectFlag := cli.BoolTFlag{
+		Name:  "fixedaspect",
+		Usage: "Fixed aspect",
+	}
+	minimalViewFlag := cli.BoolFlag{
+		Name:  "minimalview",
+		Usage: "Minimal view",
+	}
+	dzmlFlag := cli.StringFlag{
+		Name:  "dzml",
+		Usage: "DZML",
+	}
 	app.Commands = []cli.Command{
 		{
 			Name:    "activity",
@@ -225,10 +253,7 @@ func main() {
 					Usage:   "Create activity",
 					Action:  logError(activityCreate),
 					Flags: []cli.Flag{
-						cli.IntFlag{
-							Name:  "typeid",
-							Usage: "Type ID",
-						},
+						typeIdFlag,
 					},
 				},
 				{
@@ -267,30 +292,12 @@ func main() {
 					Usage:   "Visualisation URL",
 					Action:  logError(visualisationURL),
 					Flags: []cli.Flag{
-						cli.StringSliceFlag{
-							Name:  "name",
-							Usage: "Name",
-						},
-						cli.StringSliceFlag{
-							Name:  "avatar",
-							Usage: "Avatar",
-						},
-						cli.StringFlag{
-							Name:  "avatarbaseurl",
-							Usage: "Avatar base URL",
-						},
-						cli.BoolTFlag{
-							Name:  "fixedaspect",
-							Usage: "Fixed aspect",
-						},
-						cli.BoolFlag{
-							Name:  "minimalview",
-							Usage: "Minimal view",
-						},
-						cli.StringFlag{
-							Name:  "dzml",
-							Usage: "DZML",
-						},
+						nameFlag,
+						avatarFlag,
+						avatarBaseUrlFlag,
+						fixedAspectFlag,
+						minimalViewFlag,
+						dzmlFlag,
 					},
 				},
 			},
