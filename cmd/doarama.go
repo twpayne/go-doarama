@@ -109,6 +109,43 @@ func activityDelete(c *cli.Context) error {
 	return nil
 }
 
+func create(c *cli.Context) error {
+	client, err := newAuthenticatedDoaramaClient(c)
+	if err != nil {
+		return err
+	}
+	typeId := c.Int("typeid")
+	var as []*doarama.Activity
+	for _, arg := range c.Args() {
+		a, err := activityCreateOne(client, arg)
+		if err != nil {
+			break
+		}
+		err = a.SetInfo(&doarama.ActivityInfo{
+			TypeId: typeId,
+		})
+		if err != nil {
+			break
+		}
+		fmt.Printf("ActivityId: %d\n", a.Id)
+		as = append(as, a)
+	}
+	if err != nil {
+		for _, a := range as {
+			a.Delete()
+		}
+		return err
+	}
+	v, err := client.CreateVisualisation(as)
+	if err != nil {
+		return err
+	}
+	fmt.Printf("VisualisationKey: %s\n", v.Key)
+	vuo := newVisualisationURLOptions(c)
+	fmt.Printf("VisualisationURL: %s\n", v.URL(vuo))
+	return nil
+}
+
 func queryActivityTypes(c *cli.Context) error {
 	client := newDoaramaClient(c)
 	ats, err := client.ActivityTypes()
@@ -262,6 +299,21 @@ func main() {
 					Usage:   "Delete activity",
 					Action:  logError(activityDelete),
 				},
+			},
+		},
+		{
+			Name:    "create",
+			Aliases: []string{"c"},
+			Usage:   "Create",
+			Action:  logError(create),
+			Flags: []cli.Flag{
+				typeIdFlag,
+				nameFlag,
+				avatarFlag,
+				avatarBaseUrlFlag,
+				fixedAspectFlag,
+				minimalViewFlag,
+				dzmlFlag,
 			},
 		},
 		{
