@@ -100,7 +100,7 @@ func activityDelete(c *cli.Context) error {
 		ids = append(ids, int(id64))
 	}
 	for _, id := range ids {
-		a := client.Activity(id, "WGS84")
+		a := client.Activity(id)
 		if err := a.Delete(); err != nil {
 			log.Print(err)
 			continue
@@ -174,7 +174,7 @@ func visualisationCreate(c *cli.Context) error {
 		if err != nil {
 			return err
 		}
-		a := client.Activity(int(id64), "WGS84")
+		a := client.Activity(int(id64))
 		as = append(as, a)
 	}
 	v, err := client.CreateVisualisation(as)

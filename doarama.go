@@ -45,9 +45,8 @@ type ActivityInfo struct {
 
 // Type Activity represents an activity on the server.
 type Activity struct {
-	c                 *Client
-	Id                int
-	altitudeReference string
+	c  *Client
+	Id int
 }
 
 // Type Coords represents a coordinate.
@@ -188,12 +187,11 @@ func (c *Client) ActivityTypes() (map[string]int, error) {
 	return result, nil
 }
 
-// Activity returns the activity with the specified id and altitude reference. altitudeReference is usually "WGS84".
-func (c *Client) Activity(id int, altitudeReference string) *Activity {
+// Activity returns the activity with the specified id.
+func (c *Client) Activity(id int) *Activity {
 	return &Activity{
-		c:                 c,
-		Id:                id,
-		altitudeReference: altitudeReference,
+		c:  c,
+		Id: id,
 	}
 }
 
@@ -227,7 +225,7 @@ func (c *Client) CreateActivity(filename string, gpsTrack io.Reader) (*Activity,
 }
 
 // CreateLiveActivity creates a new live activity.
-func (c *Client) CreateLiveActivity(startLatitude, startLongitude float64, startTime int64, altitudeReference string) (*Activity, error) {
+func (c *Client) CreateLiveActivity(startLatitude, startLongitude float64, startTime int64) (*Activity, error) {
 	var data = struct {
 		StartLatitude  float64 `json:"startLatitude"`
 		StartLongitude float64 `json:"startLongitude"`
@@ -242,8 +240,7 @@ func (c *Client) CreateLiveActivity(startLatitude, startLongitude float64, start
 		return nil, err
 	}
 	a := &Activity{
-		c:                 c,
-		altitudeReference: altitudeReference,
+		c: c,
 	}
 	if err := c.doRequest(req, a); err != nil {
 		return nil, err
@@ -292,8 +289,8 @@ func (a *Activity) Delete() error {
 	return nil
 }
 
-// Record records zero or more samples.
-func (a *Activity) Record(samples []*Sample) error {
+// Record records zero or more samples. altitudeReference should normally be "WGS84".
+func (a *Activity) Record(samples []*Sample, altitudeReference string) error {
 	data := struct {
 		Samples           []*Sample `json:"samples"`
 		ActivityId        int       `json:"activityId"`
@@ -301,7 +298,7 @@ func (a *Activity) Record(samples []*Sample) error {
 	}{
 		Samples:           samples,
 		ActivityId:        a.Id,
-		AltitudeReference: a.altitudeReference,
+		AltitudeReference: altitudeReference,
 	}
 	req, err := a.c.newRequestJSON("POST", a.c.apiURL+"/activity/record", &data)
 	if err != nil {
