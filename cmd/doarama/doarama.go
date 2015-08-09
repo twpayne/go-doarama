@@ -252,27 +252,27 @@ func main() {
 	}
 	typeIdFlag := cli.IntFlag{
 		Name:  "typeid",
-		Usage: "Type ID",
+		Usage: "type id",
 	}
 	nameFlag := cli.StringSliceFlag{
 		Name:  "name",
-		Usage: "Name",
+		Usage: "name",
 	}
 	avatarFlag := cli.StringSliceFlag{
 		Name:  "avatar",
-		Usage: "Avatar",
+		Usage: "avatar",
 	}
 	avatarBaseUrlFlag := cli.StringFlag{
 		Name:  "avatarbaseurl",
-		Usage: "Avatar base URL",
+		Usage: "avatar base URL",
 	}
 	fixedAspectFlag := cli.BoolTFlag{
 		Name:  "fixedaspect",
-		Usage: "Fixed aspect",
+		Usage: "fixed aspect",
 	}
 	minimalViewFlag := cli.BoolFlag{
 		Name:  "minimalview",
-		Usage: "Minimal view",
+		Usage: "minimal view",
 	}
 	dzmlFlag := cli.StringFlag{
 		Name:  "dzml",
@@ -282,12 +282,12 @@ func main() {
 		{
 			Name:    "activity",
 			Aliases: []string{"a"},
-			Usage:   "Activity",
+			Usage:   "Manages activities",
 			Subcommands: []cli.Command{
 				{
 					Name:    "create",
 					Aliases: []string{"c"},
-					Usage:   "Create activity",
+					Usage:   "Creates an activity from one or more tracklogs",
 					Action:  logError(activityCreate),
 					Flags: []cli.Flag{
 						typeIdFlag,
@@ -296,7 +296,7 @@ func main() {
 				{
 					Name:    "delete",
 					Aliases: []string{"d"},
-					Usage:   "Delete activity",
+					Usage:   "Deletes one or more activities by id",
 					Action:  logError(activityDelete),
 				},
 			},
@@ -304,7 +304,7 @@ func main() {
 		{
 			Name:    "create",
 			Aliases: []string{"c"},
-			Usage:   "Create",
+			Usage:   "Creates a visualisation URL from one or more tracklogs",
 			Action:  logError(create),
 			Flags: []cli.Flag{
 				typeIdFlag,
@@ -319,29 +319,30 @@ func main() {
 		{
 			Name:    "query-activity-types",
 			Aliases: []string{"qat"},
-			Usage:   "Query activity types",
+			Usage:   "Queries activity types",
 			Action:  logError(queryActivityTypes),
 		},
 		{
 			Name:    "visualisation",
 			Aliases: []string{"v"},
+			Usage:   "Manages visualisations",
 			Subcommands: []cli.Command{
 				{
 					Name:    "create",
 					Aliases: []string{"c"},
-					Usage:   "Create visualisation",
+					Usage:   "Creates a visualisation from a list of activities",
 					Action:  logError(visualisationCreate),
 				},
 				{
 					Name:    "delete",
 					Aliases: []string{"d"},
-					Usage:   "Delete visualisation",
+					Usage:   "Deletes one or more visualisations by key",
 					Action:  logError(visualisationDelete),
 				},
 				{
 					Name:    "url",
 					Aliases: []string{"u"},
-					Usage:   "Visualisation URL",
+					Usage:   "Creates a visualisation URL from a visualisation key",
 					Action:  logError(visualisationURL),
 					Flags: []cli.Flag{
 						nameFlag,
