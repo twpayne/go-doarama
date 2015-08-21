@@ -12,6 +12,7 @@ import (
 	"net/http"
 	"net/url"
 	"strconv"
+	"time"
 )
 
 const API_URL = "https://api.doarama.com/api/0.2"
@@ -386,4 +387,9 @@ func (v *Visualisation) URL(vo *VisualisationURLOptions) *url.URL {
 	}
 	u.RawQuery = values.Encode()
 	return u
+}
+
+// Time converts a time.Time to a Doarama timestamp.
+func Time(t time.Time) int64 {
+	return t.UnixNano() / 1000000
 }
