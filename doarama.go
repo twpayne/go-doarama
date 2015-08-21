@@ -1,4 +1,5 @@
-// Package doarama provides a client to doarama.com's API. See http://www.doarama.com/api/0.2/docs.
+// Package doarama provides a client to doarama.com's API. See
+// http://www.doarama.com/api/0.2/docs.
 package doarama
 
 import (
@@ -15,7 +16,7 @@ import (
 
 const API_URL = "https://api.doarama.com/api/0.2"
 
-// Type Error represents a Doarama server error.
+// An Error represents a Doarama server error.
 type Error struct {
 	HTTPStatusCode int
 	HTTPStatus     string
@@ -28,7 +29,7 @@ func (e Error) Error() string {
 	return fmt.Sprintf("doarama: %s: %s: %s", e.HTTPStatus, e.Status, e.Message)
 }
 
-// Client is an opaque type for a Doarama client.
+// A Client is an opaque type for a Doarama client.
 type Client struct {
 	apiName    string
 	apiKey     string
@@ -38,18 +39,18 @@ type Client struct {
 	user       string
 }
 
-// Type ActivityInfo represents the info associated with an activity.
+// An ActivityInfo represents the info associated with an activity.
 type ActivityInfo struct {
 	TypeId int `json:"activityTypeId"`
 }
 
-// Type Activity represents an activity on the server.
+// An Activity represents an activity on the server.
 type Activity struct {
 	c  *Client
 	Id int
 }
 
-// Type Coords represents a coordinate.
+// A Coords represents a coordinate.
 type Coords struct {
 	Latitude         float64 `json:"latitude"`
 	Longitude        float64 `json:"longitude"`
@@ -59,20 +60,21 @@ type Coords struct {
 	Heading          float64 `json:"heading"`
 }
 
-// Type Sample represents a live sample.
+// A Sample represents a live sample.
 type Sample struct {
 	Time     int64                  `json:"time"`
 	Coords   Coords                 `json:"coords"`
 	UserData map[string]interface{} `json:"userData,omitempty"`
 }
 
-// Type Visualisation represents a visualisation on the server.
+// A Visualisation represents a visualisation on the server.
 type Visualisation struct {
 	c   *Client
 	Key string `json:"key"`
 }
 
-// Type VisualisationURLOptions represents the options that can be set for a visualisation URL.
+// A VisualisationURLOptions represents the options that can be set for a
+// visualisation URL.
 type VisualisationURLOptions struct {
 	Names         []string
 	Avatars       []string
@@ -289,7 +291,8 @@ func (a *Activity) Delete() error {
 	return nil
 }
 
-// Record records zero or more samples. altitudeReference should normally be "WGS84".
+// Record records zero or more samples. altitudeReference should normally be
+// "WGS84".
 func (a *Activity) Record(samples []*Sample, altitudeReference string) error {
 	data := struct {
 		Samples           []*Sample `json:"samples"`
