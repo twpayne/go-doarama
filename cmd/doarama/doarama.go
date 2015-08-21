@@ -188,21 +188,6 @@ func visualisationCreate(c *cli.Context) error {
 	return nil
 }
 
-func visualisationDelete(c *cli.Context) error {
-	client, err := newAuthenticatedDoaramaClient(c)
-	if err != nil {
-		return err
-	}
-	for _, arg := range c.Args() {
-		v := client.Visualisation(arg)
-		if err := v.Delete(); err != nil {
-			log.Print(err)
-			continue
-		}
-	}
-	return nil
-}
-
 func visualisationURL(c *cli.Context) error {
 	client := newDoaramaClient(c)
 	vuo := newVisualisationURLOptions(c)
@@ -335,12 +320,6 @@ func main() {
 					Aliases: []string{"c"},
 					Usage:   "Creates a visualisation from a list of activities",
 					Action:  logError(visualisationCreate),
-				},
-				{
-					Name:    "delete",
-					Aliases: []string{"d"},
-					Usage:   "Deletes one or more visualisations by key",
-					Action:  logError(visualisationDelete),
 				},
 				{
 					Name:    "url",

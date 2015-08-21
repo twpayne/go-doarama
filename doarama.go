@@ -352,18 +352,6 @@ func (v *Visualisation) AddActivities(activities []*Activity) error {
 	return nil
 }
 
-// Delete deletes the visualisation.
-func (v *Visualisation) Delete() error {
-	req, err := v.c.newRequest("DELETE", v.URL(nil).String(), nil)
-	if err != nil {
-		return err
-	}
-	if err := v.c.doRequest(req, nil); err != nil {
-		return err
-	}
-	return nil
-}
-
 // URL returns a URL with the specificed options.
 func (v *Visualisation) URL(vo *VisualisationURLOptions) *url.URL {
 	u, err := url.Parse(v.c.apiURL + "/visualisation")
