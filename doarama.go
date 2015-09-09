@@ -42,7 +42,9 @@ type Client struct {
 
 // An ActivityInfo represents the info associated with an activity.
 type ActivityInfo struct {
-	TypeId int `json:"activityTypeId"`
+	TypeId        int    `json:"activityTypeId,omitempty"`
+	UserName      string `json:"userName,omitempty"`
+	UserAvatarURL string `json:"userAvatarUrl,omitempty"`
 }
 
 // An Activity represents an activity on the server.
