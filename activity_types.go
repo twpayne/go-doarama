@@ -23,6 +23,7 @@ const (
 	FLY_GLIDE              = 11
 	FLY_GLIDER             = 28
 	FLY_HANG_GLIDE         = 27
+	FLY_HIKE_AND_GLIDE     = 35
 	FLY_PARAGLIDE          = 29
 	FLY_SAILPLANE          = 28
 	FLY_UAV                = 30
@@ -67,6 +68,7 @@ var (
 		"Fly - Bird / Aves":                     31,
 		"Fly - Glide":                           11,
 		"Fly - Hang Glide":                      27,
+		"Fly - Hike + Glide":                    35,
 		"Fly - Paraglide":                       29,
 		"Fly - Sailplane / Glider":              28,
 		"Fly - UAV / Drone":                     30,
