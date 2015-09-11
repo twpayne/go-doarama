@@ -81,14 +81,6 @@ func generateActivityIds(filename string) error {
 	if err != nil {
 		return err
 	}
-	/*
-		activityTypes := map[string]int{
-			"Boat - Kayak/Canoe/Row etc": 10,
-			"Boat - Motor":               9,
-			"Drive - Car/Truck/Bus etc":  24,
-			"Snowboard":                  1,
-		}
-	*/
 	maxConstLen := 0
 	maxNameLen := 0
 	constActivityIds := make(map[string]int)
