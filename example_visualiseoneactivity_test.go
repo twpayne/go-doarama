@@ -9,7 +9,6 @@ import (
 )
 
 func Example() (*doarama.Visualisation, error) {
-
 	// Create the client using anonymous authentication
 	apiKey := "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
 	apiName := "Your API Name"
