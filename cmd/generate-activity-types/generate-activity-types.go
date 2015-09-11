@@ -17,12 +17,12 @@ var tmpl = template.Must(template.New("gat").Parse("" +
 	"package doarama\n" +
 	"\n" +
 	"const (\n" +
-	"{{range $constName, $id := .ConstActivityTypes}}\t{{$constName}} = {{$id}}\n" +
+	"{{range $constName, $id := .ConstActivityIds}}\t{{$constName}} = {{$id}}\n" +
 	"{{end}})\n" +
 	"\n" +
 	"var (\n" +
-	"\tActivityTypes = map[string]int{\n" +
-	"{{range $name, $id := .FormattedActivityTypes}}\t\t{{$name}} {{$id}},\n" +
+	"\tActivityIds = map[string]int{\n" +
+	"{{range $name, $id := .FormattedActivityIds}}\t\t{{$name}} {{$id}},\n" +
 	"{{end}}\t}\n" +
 	")\n",
 ))
@@ -70,14 +70,14 @@ func pad(s string, n int) string {
 	}
 }
 
-func generateActivityTypes(filename string) error {
+func generateActivityIds(filename string) error {
 	f, err := os.Create(filename)
 	if err != nil {
 		return err
 	}
 	defer f.Close()
 	client := doarama.NewClient(doarama.API_URL, "", "")
-	activityTypes, err := client.ActivityTypes()
+	activityTypes, err := client.ActivityIds()
 	if err != nil {
 		return err
 	}
@@ -91,7 +91,7 @@ func generateActivityTypes(filename string) error {
 	*/
 	maxConstLen := 0
 	maxNameLen := 0
-	constActivityTypes := make(map[string]int)
+	constActivityIds := make(map[string]int)
 	for name, id := range activityTypes {
 		maxNameLen = max(maxNameLen, len(name))
 		ss, err := constantize(name)
@@ -99,26 +99,26 @@ func generateActivityTypes(filename string) error {
 			return err
 		}
 		for _, s := range ss {
-			constActivityTypes[s] = id
+			constActivityIds[s] = id
 			maxConstLen = max(maxConstLen, len(s))
 		}
 	}
-	paddedFormattedActivityTypes := make(map[string]int)
+	paddedFormattedActivityIds := make(map[string]int)
 	for name, id := range activityTypes {
-		paddedFormattedActivityTypes[pad("\""+name+"\":", maxNameLen+3)] = id
+		paddedFormattedActivityIds[pad("\""+name+"\":", maxNameLen+3)] = id
 	}
-	paddedConstActivityTypes := make(map[string]int)
-	for name, id := range constActivityTypes {
-		paddedConstActivityTypes[pad(name, maxConstLen)] = id
+	paddedConstActivityIds := make(map[string]int)
+	for name, id := range constActivityIds {
+		paddedConstActivityIds[pad(name, maxConstLen)] = id
 	}
 	if err := tmpl.Execute(f, struct {
-		FormattedActivityTypes map[string]int
-		ConstActivityTypes     map[string]int
-		Filename               string
+		FormattedActivityIds map[string]int
+		ConstActivityIds     map[string]int
+		Filename             string
 	}{
-		FormattedActivityTypes: paddedFormattedActivityTypes,
-		ConstActivityTypes:     paddedConstActivityTypes,
-		Filename:               filename,
+		FormattedActivityIds: paddedFormattedActivityIds,
+		ConstActivityIds:     paddedConstActivityIds,
+		Filename:             filename,
 	}); err != nil {
 		return err
 	}
@@ -128,7 +128,7 @@ func generateActivityTypes(filename string) error {
 func main() {
 	o := flag.String("o", "", "")
 	flag.Parse()
-	if err := generateActivityTypes(*o); err != nil {
+	if err := generateActivityIds(*o); err != nil {
 		log.Fatal(err)
 	}
 }

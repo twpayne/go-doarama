@@ -149,9 +149,9 @@ func create(c *cli.Context) error {
 	return nil
 }
 
-func queryActivityTypes(c *cli.Context) error {
+func queryActivityIds(c *cli.Context) error {
 	client := newDoaramaClient(c)
-	ats, err := client.ActivityTypes()
+	ats, err := client.ActivityIds()
 	if err != nil {
 		return err
 	}
@@ -305,10 +305,10 @@ func main() {
 			},
 		},
 		{
-			Name:    "query-activity-types",
-			Aliases: []string{"qat"},
-			Usage:   "Queries activity types",
-			Action:  logError(queryActivityTypes),
+			Name:    "query-activity-ids",
+			Aliases: []string{"qai"},
+			Usage:   "Queries activity ids",
+			Action:  logError(queryActivityIds),
 		},
 		{
 			Name:    "visualisation",

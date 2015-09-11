@@ -55,7 +55,7 @@ const (
 )
 
 var (
-	ActivityTypes = map[string]int{
+	ActivityIds = map[string]int{
 		"Boat - Kayak/Canoe/Row etc":            10,
 		"Boat - Motor":                          9,
 		"Boat - Sail":                           8,

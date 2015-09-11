@@ -170,8 +170,8 @@ func (c *Client) doRequest(req *http.Request, v interface{}) error {
 	return nil
 }
 
-// ActivityTypes returns a map of activity types to activity type ids.
-func (c *Client) ActivityTypes() (map[string]int, error) {
+// ActivityIds returns a map of activity types to activity type ids.
+func (c *Client) ActivityIds() (map[string]int, error) {
 	req, err := c.newRequest("GET", c.apiURL+"/activityType", nil)
 	if err != nil {
 		return nil, err
