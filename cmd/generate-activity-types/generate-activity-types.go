@@ -24,6 +24,9 @@ var tmpl = template.Must(template.New("gat").Parse("" +
 	"\tActivityIds = map[string]int{\n" +
 	"{{range $name, $id := .FormattedActivityIds}}\t\t{{$name}} {{$id}},\n" +
 	"{{end}}\t}\n" +
+	"\tActivityNames = map[int]string{\n" +
+	"{{range $id, $name := .ActivityNames}}\t\t{{$id}}:{{if (lt $id 10)}} {{end}} \"{{$name}}\",\n" +
+	"{{end}}\t}\n" +
 	")\n",
 ))
 
@@ -81,6 +84,10 @@ func generateActivityIds(filename string) error {
 	if err != nil {
 		return err
 	}
+	activityNames := make(map[int]string)
+	for name, id := range activityTypes {
+		activityNames[id] = name
+	}
 	maxConstLen := 0
 	maxNameLen := 0
 	constActivityIds := make(map[string]int)
@@ -104,10 +111,12 @@ func generateActivityIds(filename string) error {
 		paddedConstActivityIds[pad(name, maxConstLen)] = id
 	}
 	if err := tmpl.Execute(f, struct {
+		ActivityNames        map[int]string
 		FormattedActivityIds map[string]int
 		ConstActivityIds     map[string]int
 		Filename             string
 	}{
+		ActivityNames:        activityNames,
 		FormattedActivityIds: paddedFormattedActivityIds,
 		ConstActivityIds:     paddedConstActivityIds,
 		Filename:             filename,
