@@ -8,10 +8,11 @@ import (
 	"github.com/twpayne/go-doarama"
 )
 
-func TestWriteGPX(t *testing.T) {
+func TestWrite(t *testing.T) {
 	for _, tc := range []struct {
 		samples []doarama.Sample
-		want    string
+		wantGPX string
+		wantIGC string
 	}{
 		{
 			samples: []doarama.Sample{
@@ -32,7 +33,7 @@ func TestWriteGPX(t *testing.T) {
 					},
 				},
 			},
-			want: "" +
+			wantGPX: "" +
 				"<gpx version=\"1.1\" creator=\"https://github.com/twpayne/go-doarama\">" +
 				"<trk>" +
 				"<trkseg>" +
@@ -47,14 +48,25 @@ func TestWriteGPX(t *testing.T) {
 				"</trkseg>" +
 				"</trk>" +
 				"</gpx>",
+			wantIGC: "" +
+				"HFDTE050715\r\n" +
+				"B0930004747931N01302904EA0043000430\r\n" +
+				"B1115004748247N01306654EA0127201272\r\n",
 		},
 	} {
-		b := &bytes.Buffer{}
-		if err := doarama.WriteGPX(b, tc.samples); err != nil {
+		bGPX := &bytes.Buffer{}
+		if err := doarama.WriteGPX(bGPX, tc.samples); err != nil {
 			t.Errorf("doarama.WriteGPX(b, %#v) == %v, want nil", tc.samples, err)
 		}
-		if b.String() != tc.want {
-			t.Errorf("doarama.WriteGPX(b, %#v) wrote %#v, want %#v", tc.samples, b.String(), tc.want)
+		if bGPX.String() != tc.wantGPX {
+			t.Errorf("doarama.WriteGPX(b, %#v) wrote %#v, want %#v", tc.samples, bGPX.String(), tc.wantGPX)
+		}
+		bIGC := &bytes.Buffer{}
+		if err := doarama.WriteIGC(bIGC, tc.samples); err != nil {
+			t.Errorf("doarama.WriteIGC(b, %#v) == %v, want nil", tc.samples, err)
+		}
+		if bIGC.String() != tc.wantIGC {
+			t.Errorf("doarama.WriteIGC(b, %#v) wrote %#v, want %#v", tc.samples, bIGC.String(), tc.wantIGC)
 		}
 	}
 }
