@@ -28,7 +28,7 @@ func Example() (*doarama.Visualisation, error) {
 	if err != nil {
 		return nil, err
 	}
-	log.Print("ActivityId: %d", activity.Id)
+	log.Printf("ActivityId: %d", activity.Id)
 
 	// Set the activity info
 	if err := activity.SetInfo(&doarama.ActivityInfo{
@@ -43,8 +43,8 @@ func Example() (*doarama.Visualisation, error) {
 	if err != nil {
 		return nil, err
 	}
-	log.Print("VisualisationKey: %s", visualisation.Key)
-	log.Print("VisualisationURL: %s", visualisation.URL(nil))
+	log.Printf("VisualisationKey: %s", visualisation.Key)
+	log.Printf("VisualisationURL: %s", visualisation.URL(nil))
 
 	return visualisation, nil
 }
