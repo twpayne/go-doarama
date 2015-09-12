@@ -1,4 +1,3 @@
-//go:generate go run cmd/generate-activity-types/generate-activity-types.go -o activity_types.go
 package doarama
 
 const (
@@ -132,3 +131,5 @@ var (
 		35: "Fly - Hike + Glide",
 	}
 )
+
+//go:generate go run cmd/generate-activity-types/generate-activity-types.go -o activity_types.go

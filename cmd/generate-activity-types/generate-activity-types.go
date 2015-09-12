@@ -13,7 +13,6 @@ import (
 )
 
 var tmpl = template.Must(template.New("gat").Parse("" +
-	"//go:generate go run cmd/generate-activity-types/generate-activity-types.go -o {{.Filename}}\n" +
 	"package doarama\n" +
 	"\n" +
 	"const (\n" +
@@ -27,7 +26,9 @@ var tmpl = template.Must(template.New("gat").Parse("" +
 	"\tActivityNames = map[int]string{\n" +
 	"{{range $id, $name := .ActivityNames}}\t\t{{$id}}:{{if (lt $id 10)}} {{end}} \"{{$name}}\",\n" +
 	"{{end}}\t}\n" +
-	")\n",
+	")\n" +
+	"\n" +
+	"//go:generate go run cmd/generate-activity-types/generate-activity-types.go -o {{.Filename}}\n",
 ))
 
 func constantize(s string) ([]string, error) {
