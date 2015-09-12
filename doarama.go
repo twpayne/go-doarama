@@ -61,9 +61,11 @@ type Coords struct {
 	Heading          float64 `json:"heading"`
 }
 
+type Timestamp int64
+
 // A Sample represents a live sample.
 type Sample struct {
-	Time     int64                  `json:"time"`
+	Time     Timestamp              `json:"time"`
 	Coords   Coords                 `json:"coords"`
 	UserData map[string]interface{} `json:"userData,omitempty"`
 }
@@ -389,7 +391,12 @@ func (v *Visualisation) URL(vo *VisualisationURLOptions) *url.URL {
 	return u
 }
 
-// Time converts a time.Time to a Doarama timestamp.
-func Time(t time.Time) int64 {
-	return t.UnixNano() / 1000000
+// NewTimestamp creates a Timestamp from a time.Time.
+func NewTimestamp(t time.Time) Timestamp {
+	return Timestamp(t.UnixNano() / 1000000)
+}
+
+// Time returns ts as a time.Time.
+func (ts Timestamp) Time() time.Time {
+	return time.Unix(int64(ts)/1000, int64(ts)%1000).UTC()
 }

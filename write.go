@@ -22,7 +22,7 @@ func WriteGPX(w io.Writer, samples []Sample) error {
 			"</trkpt>",
 			s.Coords.Latitude, s.Coords.Longitude,
 			s.Coords.Altitude,
-			time.Unix(s.Time/1000, s.Time%1000).UTC().Format("2006-01-02T15:04:05Z")); err != nil {
+			s.Time.Time().Format("2006-01-02T15:04:05Z")); err != nil {
 			return err
 		}
 	}
@@ -53,7 +53,7 @@ func dmmh(x float64, hs string) (d int, mm int, h uint8) {
 func WriteIGC(w io.Writer, samples []Sample) error {
 	var date time.Time
 	for _, s := range samples {
-		t := time.Unix(s.Time/1000, s.Time%1000).UTC()
+		t := s.Time.Time()
 		if t.Day() != date.Day() || t.Month() != date.Month() || t.Year() != date.Year() {
 			date = t
 			if _, err := fmt.Fprintf(w, "HFDTE%02d%02d%02d\r\n", date.Day(), date.Month(), date.Year()%100); err != nil {
