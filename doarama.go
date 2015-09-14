@@ -400,5 +400,5 @@ func NewTimestamp(t time.Time) Timestamp {
 
 // Time returns ts as a time.Time.
 func (ts Timestamp) Time() time.Time {
-	return time.Unix(int64(ts)/1000, int64(ts)%1000).UTC()
+	return time.Unix(int64(ts)/1000, int64(ts)%1000*1000000).UTC()
 }
