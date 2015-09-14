@@ -232,11 +232,11 @@ func (c *Client) CreateActivity(filename string, gpsTrack io.Reader) (*Activity,
 }
 
 // CreateLiveActivity creates a new live activity.
-func (c *Client) CreateLiveActivity(startLatitude, startLongitude float64, startTime int64) (*Activity, error) {
+func (c *Client) CreateLiveActivity(startLatitude, startLongitude float64, startTime Timestamp) (*Activity, error) {
 	var data = struct {
-		StartLatitude  float64 `json:"startLatitude"`
-		StartLongitude float64 `json:"startLongitude"`
-		StartTime      int64   `json:"startTime"`
+		StartLatitude  float64   `json:"startLatitude"`
+		StartLongitude float64   `json:"startLongitude"`
+		StartTime      Timestamp `json:"startTime"`
 	}{
 		StartLatitude:  startLatitude,
 		StartLongitude: startLongitude,
