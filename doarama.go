@@ -63,6 +63,8 @@ type Coords struct {
 	Heading          float64 `json:"heading"`
 }
 
+// A Timestamp represents at Doarama timestamp. Doarama timestamps are in
+// milliseconds since the epoch.
 type Timestamp int64
 
 // A Sample represents a live sample.
