@@ -27,7 +27,7 @@ type Error struct {
 
 // Error returns a string representation of the error.
 func (e Error) Error() string {
-	return fmt.Sprintf("doarama: %s: %s: %s", e.HTTPStatus, e.Status, e.Message)
+	return fmt.Sprintf("doarama: %d %s: %s: %s", e.HTTPStatusCode, e.HTTPStatus, e.Status, e.Message)
 }
 
 // A Client is an opaque type for a Doarama client.
