@@ -21,10 +21,7 @@ var tmpl = template.Must(template.New("gat").Parse("" +
 	"{{end}})\n" +
 	"\n" +
 	"var DefaultActivityTypes = ActivityTypes{\n" +
-	"{{range $at := .ActivityTypes}}\t{\n" +
-	"\t\tId:   {{$at.Id}},\n" +
-	"\t\tName: {{$at.Name | printf \"%#v\"}},\n" +
-	"\t},\n" +
+	"{{range $at := .ActivityTypes}}\t{Id: {{$at.Id}}, Name: {{$at.Name | printf \"%#v\"}}},\n" +
 	"{{end}}}\n" +
 	"\n" +
 	"//go:generate go run cmd/generate-activity-types/generate-activity-types.go -o {{.Filename}}\n",
