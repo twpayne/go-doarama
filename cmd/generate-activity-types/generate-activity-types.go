@@ -81,31 +81,31 @@ func generateActivityIds(filename string) error {
 	}
 	defer f.Close()
 	client := doarama.NewClient(doarama.API_URL, "", "")
-	activityTypes, err := client.ActivityIds()
+	activityTypes, err := client.ActivityTypes()
 	if err != nil {
 		return err
 	}
 	activityNames := make(map[int]string)
-	for name, id := range activityTypes {
-		activityNames[id] = name
+	for _, at := range activityTypes {
+		activityNames[at.Id] = at.Name
 	}
 	maxConstLen := 0
 	maxNameLen := 0
 	constActivityIds := make(map[string]int)
-	for name, id := range activityTypes {
-		maxNameLen = max(maxNameLen, len(name))
-		ss, err := constantize(name)
+	for _, at := range activityTypes {
+		maxNameLen = max(maxNameLen, len(at.Name))
+		ss, err := constantize(at.Name)
 		if err != nil {
 			return err
 		}
 		for _, s := range ss {
-			constActivityIds[s] = id
+			constActivityIds[s] = at.Id
 			maxConstLen = max(maxConstLen, len(s))
 		}
 	}
 	paddedFormattedActivityIds := make(map[string]int)
-	for name, id := range activityTypes {
-		paddedFormattedActivityIds[pad("\""+name+"\":", maxNameLen+3)] = id
+	for _, at := range activityTypes {
+		paddedFormattedActivityIds[pad("\""+at.Name+"\":", maxNameLen+3)] = at.Id
 	}
 	paddedConstActivityIds := make(map[string]int)
 	for name, id := range constActivityIds {

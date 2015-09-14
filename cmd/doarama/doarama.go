@@ -149,19 +149,21 @@ func create(c *cli.Context) error {
 	return nil
 }
 
-func queryActivityIds(c *cli.Context) error {
+type ByName doarama.ActivityTypes
+
+func (ats ByName) Len() int           { return len(ats) }
+func (ats ByName) Less(i, j int) bool { return ats[i].Name < ats[j].Name }
+func (ats ByName) Swap(i, j int)      { ats[i], ats[j] = ats[j], ats[i] }
+
+func queryActivityTypes(c *cli.Context) error {
 	client := newDoaramaClient(c)
-	ats, err := client.ActivityIds()
+	ats, err := client.ActivityTypes()
 	if err != nil {
 		return err
 	}
-	var names []string
-	for name, _ := range ats {
-		names = append(names, name)
-	}
-	sort.Strings(names)
-	for _, name := range names {
-		fmt.Printf("%s: %d\n", name, ats[name])
+	sort.Sort(ByName(ats))
+	for _, at := range ats {
+		fmt.Printf("%s: %d\n", at.Name, at.Id)
 	}
 	return nil
 }
@@ -305,10 +307,10 @@ func main() {
 			},
 		},
 		{
-			Name:    "query-activity-ids",
-			Aliases: []string{"qai"},
-			Usage:   "Queries activity ids",
-			Action:  logError(queryActivityIds),
+			Name:    "query-activity-types",
+			Aliases: []string{"qat"},
+			Usage:   "Queries activity types",
+			Action:  logError(queryActivityTypes),
 		},
 		{
 			Name:    "visualisation",

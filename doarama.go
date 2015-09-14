@@ -47,6 +47,35 @@ type ActivityInfo struct {
 	UserAvatarURL string `json:"userAvatarUrl,omitempty"`
 }
 
+// An ActivityType is an activity type.
+type ActivityType struct {
+	Id   int    `json:"id"`
+	Name string `json:"name"`
+}
+
+// An ActivityTypes is an array of ActivityTypes.
+type ActivityTypes []ActivityType
+
+// Id returns the id of the activity type with the given name.
+func (ats ActivityTypes) Id(name string) (int, bool) {
+	for _, at := range ats {
+		if at.Name == name {
+			return at.Id, true
+		}
+	}
+	return 0, false
+}
+
+// Name returns the name of the activity type with the given id.
+func (ats ActivityTypes) Name(id int) (string, bool) {
+	for _, at := range ats {
+		if at.Id == id {
+			return at.Name, true
+		}
+	}
+	return "", false
+}
+
 // An Activity represents an activity on the server.
 type Activity struct {
 	c  *Client
@@ -176,24 +205,17 @@ func (c *Client) doRequest(req *http.Request, v interface{}) error {
 	return nil
 }
 
-// ActivityIds returns a map of activity types to activity type ids.
-func (c *Client) ActivityIds() (map[string]int, error) {
+// ActivityTypes returns an array of activity types.
+func (c *Client) ActivityTypes() (ActivityTypes, error) {
 	req, err := c.newRequest("GET", c.apiURL+"/activityType", nil)
 	if err != nil {
 		return nil, err
 	}
-	var activityTypesResponse []struct {
-		Id   float64 `json:"id"`
-		Name string  `json:"name"`
-	}
-	if err := c.doRequest(req, &activityTypesResponse); err != nil {
+	var activityTypes ActivityTypes
+	if err := c.doRequest(req, &activityTypes); err != nil {
 		return nil, err
 	}
-	result := make(map[string]int)
-	for _, at := range activityTypesResponse {
-		result[at.Name] = int(at.Id)
-	}
-	return result, nil
+	return activityTypes, nil
 }
 
 // Activity returns the activity with the specified id.
