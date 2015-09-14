@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"sort"
 	"strings"
 	"text/template"
 
@@ -19,14 +20,12 @@ var tmpl = template.Must(template.New("gat").Parse("" +
 	"{{range $constName, $id := .ConstActivityIds}}\t{{$constName}} = {{$id}}\n" +
 	"{{end}})\n" +
 	"\n" +
-	"var (\n" +
-	"\tActivityIds = map[string]int{\n" +
-	"{{range $name, $id := .FormattedActivityIds}}\t\t{{$name}} {{$id}},\n" +
-	"{{end}}\t}\n" +
-	"\tActivityNames = map[int]string{\n" +
-	"{{range $id, $name := .ActivityNames}}\t\t{{$id}}:{{if (lt $id 10)}} {{end}} \"{{$name}}\",\n" +
-	"{{end}}\t}\n" +
-	")\n" +
+	"var DefaultActivityTypes = ActivityTypes{\n" +
+	"{{range $at := .ActivityTypes}}\t{\n" +
+	"\t\tId:   {{$at.Id}},\n" +
+	"\t\tName: {{$at.Name | printf \"%#v\"}},\n" +
+	"\t},\n" +
+	"{{end}}}\n" +
 	"\n" +
 	"//go:generate go run cmd/generate-activity-types/generate-activity-types.go -o {{.Filename}}\n",
 ))
@@ -74,6 +73,12 @@ func pad(s string, n int) string {
 	}
 }
 
+type ById doarama.ActivityTypes
+
+func (ats ById) Len() int           { return len(ats) }
+func (ats ById) Less(i, j int) bool { return ats[i].Id < ats[j].Id }
+func (ats ById) Swap(i, j int)      { ats[i], ats[j] = ats[j], ats[i] }
+
 func generateActivityIds(filename string) error {
 	f, err := os.Create(filename)
 	if err != nil {
@@ -85,10 +90,7 @@ func generateActivityIds(filename string) error {
 	if err != nil {
 		return err
 	}
-	activityNames := make(map[int]string)
-	for _, at := range activityTypes {
-		activityNames[at.Id] = at.Name
-	}
+	sort.Sort(ById(activityTypes))
 	maxConstLen := 0
 	maxNameLen := 0
 	constActivityIds := make(map[string]int)
@@ -103,24 +105,18 @@ func generateActivityIds(filename string) error {
 			maxConstLen = max(maxConstLen, len(s))
 		}
 	}
-	paddedFormattedActivityIds := make(map[string]int)
-	for _, at := range activityTypes {
-		paddedFormattedActivityIds[pad("\""+at.Name+"\":", maxNameLen+3)] = at.Id
-	}
 	paddedConstActivityIds := make(map[string]int)
 	for name, id := range constActivityIds {
 		paddedConstActivityIds[pad(name, maxConstLen)] = id
 	}
 	if err := tmpl.Execute(f, struct {
-		ActivityNames        map[int]string
-		FormattedActivityIds map[string]int
-		ConstActivityIds     map[string]int
-		Filename             string
+		ActivityTypes    doarama.ActivityTypes
+		ConstActivityIds map[string]int
+		Filename         string
 	}{
-		ActivityNames:        activityNames,
-		FormattedActivityIds: paddedFormattedActivityIds,
-		ConstActivityIds:     paddedConstActivityIds,
-		Filename:             filename,
+		ActivityTypes:    activityTypes,
+		ConstActivityIds: paddedConstActivityIds,
+		Filename:         filename,
 	}); err != nil {
 		return err
 	}

@@ -53,83 +53,151 @@ const (
 	WALK_TREK              = 2
 )
 
-var (
-	ActivityIds = map[string]int{
-		"Boat - Kayak/Canoe/Row etc":            10,
-		"Boat - Motor":                          9,
-		"Boat - Sail":                           8,
-		"Cycle - Mountain/Off Road etc":         6,
-		"Cycle - Sport/Road etc":                4,
-		"Cycle - Transport":                     5,
-		"Drive - Car/Truck/Bus etc":             24,
-		"Fly - Aircraft":                        12,
-		"Fly - Balloon":                         34,
-		"Fly - Bird / Aves":                     31,
-		"Fly - Glide":                           11,
-		"Fly - Hang Glide":                      27,
-		"Fly - Hike + Glide":                    35,
-		"Fly - Paraglide":                       29,
-		"Fly - Sailplane / Glider":              28,
-		"Fly - UAV / Drone":                     30,
-		"Motorcycle":                            7,
-		"Rail - Train":                          25,
-		"Ride - Equestrian/Camel etc":           26,
-		"Run - Fitness":                         3,
-		"Skate - Ice":                           18,
-		"Skate - Roller/Skateboard/Scooter etc": 19,
-		"Skate - Windskate":                     32,
-		"Ski - Cross Country":                   13,
-		"Ski - Downhill":                        14,
-		"Ski - Roller":                          15,
-		"Ski - Waterski/Wakeboard etc":          16,
-		"Snowboard":                             17,
-		"Surf - Kite":                           21,
-		"Surf - Wave":                           20,
-		"Surf - Windsurf":                       22,
-		"Swim":                                  23,
-		"Undefined - Aerial":                    33,
-		"Undefined - Ground Based":              0,
-		"Walk - Fitness":                        1,
-		"Walk - Hike/Trek etc":                  2,
-	}
-	ActivityNames = map[int]string{
-		0:  "Undefined - Ground Based",
-		1:  "Walk - Fitness",
-		2:  "Walk - Hike/Trek etc",
-		3:  "Run - Fitness",
-		4:  "Cycle - Sport/Road etc",
-		5:  "Cycle - Transport",
-		6:  "Cycle - Mountain/Off Road etc",
-		7:  "Motorcycle",
-		8:  "Boat - Sail",
-		9:  "Boat - Motor",
-		10: "Boat - Kayak/Canoe/Row etc",
-		11: "Fly - Glide",
-		12: "Fly - Aircraft",
-		13: "Ski - Cross Country",
-		14: "Ski - Downhill",
-		15: "Ski - Roller",
-		16: "Ski - Waterski/Wakeboard etc",
-		17: "Snowboard",
-		18: "Skate - Ice",
-		19: "Skate - Roller/Skateboard/Scooter etc",
-		20: "Surf - Wave",
-		21: "Surf - Kite",
-		22: "Surf - Windsurf",
-		23: "Swim",
-		24: "Drive - Car/Truck/Bus etc",
-		25: "Rail - Train",
-		26: "Ride - Equestrian/Camel etc",
-		27: "Fly - Hang Glide",
-		28: "Fly - Sailplane / Glider",
-		29: "Fly - Paraglide",
-		30: "Fly - UAV / Drone",
-		31: "Fly - Bird / Aves",
-		32: "Skate - Windskate",
-		33: "Undefined - Aerial",
-		34: "Fly - Balloon",
-		35: "Fly - Hike + Glide",
-	}
-)
+var DefaultActivityTypes = ActivityTypes{
+	{
+		Id:   0,
+		Name: "Undefined - Ground Based",
+	},
+	{
+		Id:   1,
+		Name: "Walk - Fitness",
+	},
+	{
+		Id:   2,
+		Name: "Walk - Hike/Trek etc",
+	},
+	{
+		Id:   3,
+		Name: "Run - Fitness",
+	},
+	{
+		Id:   4,
+		Name: "Cycle - Sport/Road etc",
+	},
+	{
+		Id:   5,
+		Name: "Cycle - Transport",
+	},
+	{
+		Id:   6,
+		Name: "Cycle - Mountain/Off Road etc",
+	},
+	{
+		Id:   7,
+		Name: "Motorcycle",
+	},
+	{
+		Id:   8,
+		Name: "Boat - Sail",
+	},
+	{
+		Id:   9,
+		Name: "Boat - Motor",
+	},
+	{
+		Id:   10,
+		Name: "Boat - Kayak/Canoe/Row etc",
+	},
+	{
+		Id:   11,
+		Name: "Fly - Glide",
+	},
+	{
+		Id:   12,
+		Name: "Fly - Aircraft",
+	},
+	{
+		Id:   13,
+		Name: "Ski - Cross Country",
+	},
+	{
+		Id:   14,
+		Name: "Ski - Downhill",
+	},
+	{
+		Id:   15,
+		Name: "Ski - Roller",
+	},
+	{
+		Id:   16,
+		Name: "Ski - Waterski/Wakeboard etc",
+	},
+	{
+		Id:   17,
+		Name: "Snowboard",
+	},
+	{
+		Id:   18,
+		Name: "Skate - Ice",
+	},
+	{
+		Id:   19,
+		Name: "Skate - Roller/Skateboard/Scooter etc",
+	},
+	{
+		Id:   20,
+		Name: "Surf - Wave",
+	},
+	{
+		Id:   21,
+		Name: "Surf - Kite",
+	},
+	{
+		Id:   22,
+		Name: "Surf - Windsurf",
+	},
+	{
+		Id:   23,
+		Name: "Swim",
+	},
+	{
+		Id:   24,
+		Name: "Drive - Car/Truck/Bus etc",
+	},
+	{
+		Id:   25,
+		Name: "Rail - Train",
+	},
+	{
+		Id:   26,
+		Name: "Ride - Equestrian/Camel etc",
+	},
+	{
+		Id:   27,
+		Name: "Fly - Hang Glide",
+	},
+	{
+		Id:   28,
+		Name: "Fly - Sailplane / Glider",
+	},
+	{
+		Id:   29,
+		Name: "Fly - Paraglide",
+	},
+	{
+		Id:   30,
+		Name: "Fly - UAV / Drone",
+	},
+	{
+		Id:   31,
+		Name: "Fly - Bird / Aves",
+	},
+	{
+		Id:   32,
+		Name: "Skate - Windskate",
+	},
+	{
+		Id:   33,
+		Name: "Undefined - Aerial",
+	},
+	{
+		Id:   34,
+		Name: "Fly - Balloon",
+	},
+	{
+		Id:   35,
+		Name: "Fly - Hike + Glide",
+	},
+}
 
 //go:generate go run cmd/generate-activity-types/generate-activity-types.go -o activity_types.go
