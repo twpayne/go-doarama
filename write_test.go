@@ -16,7 +16,7 @@ func TestWrite(t *testing.T) {
 	}{
 		{
 			samples: []doarama.Sample{
-				doarama.Sample{
+				{
 					Time: doarama.NewTimestamp(time.Date(2015, 7, 5, 9, 30, 0, 0, time.UTC)),
 					Coords: doarama.Coords{
 						Latitude:  47.79885,
@@ -24,7 +24,7 @@ func TestWrite(t *testing.T) {
 						Altitude:  430,
 					},
 				},
-				doarama.Sample{
+				{
 					Time: doarama.NewTimestamp(time.Date(2015, 7, 5, 11, 15, 0, 0, time.UTC)),
 					Coords: doarama.Coords{
 						Latitude:  47.80413,
