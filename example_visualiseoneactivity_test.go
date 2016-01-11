@@ -32,7 +32,7 @@ func Example() (*doarama.Visualisation, error) {
 
 	// Set the activity info
 	if err := activity.SetInfo(&doarama.ActivityInfo{
-		TypeId: doarama.FLY_PARAGLIDE,
+		TypeId: doarama.FlyParaglide,
 	}); err != nil {
 		return nil, err
 	}

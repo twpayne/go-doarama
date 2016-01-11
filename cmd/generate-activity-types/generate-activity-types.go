@@ -32,17 +32,16 @@ func constantize(s string) ([]string, error) {
 	ss := strings.SplitN(s, " - ", 2)
 	switch len(ss) {
 	case 1:
-		result = append(result, strings.ToUpper(ss[0]))
+		result = append(result, ss[0])
 	case 2:
-		prefix := strings.ToUpper(ss[0])
+		prefix := ss[0]
 		for _, desc := range strings.Split(ss[1], "/") {
 			suffix := desc
 			suffix = strings.TrimSuffix(suffix, " etc")
+			suffix = strings.Replace(suffix, " ", "", -1)
 			suffix = strings.TrimSpace(suffix)
-			suffix = strings.Replace(suffix, " ", "_", -1)
-			suffix = strings.Replace(suffix, "+", "AND", -1)
-			suffix = strings.ToUpper(suffix)
-			result = append(result, prefix+"_"+suffix)
+			suffix = strings.Replace(suffix, "+", "And", -1)
+			result = append(result, prefix+suffix)
 		}
 	default:
 		return nil, fmt.Errorf("unable to parse %v", s)
