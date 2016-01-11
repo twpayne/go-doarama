@@ -16,10 +16,12 @@ import (
 var tmpl = template.Must(template.New("gat").Parse("" +
 	"package doarama\n" +
 	"\n" +
+	"// Activity types\n" +
 	"const (\n" +
 	"{{range $constName, $id := .ConstActivityIds}}\t{{$constName}} = {{$id}}\n" +
 	"{{end}})\n" +
 	"\n" +
+	"// DefaultActivityTypes\n" +
 	"var DefaultActivityTypes = ActivityTypes{\n" +
 	"{{range $at := .ActivityTypes}}\t{Id: {{$at.Id}}, Name: {{$at.Name | printf \"%#v\"}}},\n" +
 	"{{end}}}\n" +

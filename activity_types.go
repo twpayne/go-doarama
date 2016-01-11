@@ -1,5 +1,6 @@
 package doarama
 
+// Activity types
 const (
 	BoatCanoe            = 10
 	BoatKayak            = 10
@@ -53,6 +54,7 @@ const (
 	WalkTrek             = 2
 )
 
+// DefaultActivityTypes
 var DefaultActivityTypes = ActivityTypes{
 	{Id: 0, Name: "Undefined - Ground Based"},
 	{Id: 1, Name: "Walk - Fitness"},
