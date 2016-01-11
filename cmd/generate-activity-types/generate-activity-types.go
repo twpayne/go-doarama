@@ -81,7 +81,7 @@ func generateActivityIds(filename string) error {
 		return err
 	}
 	defer f.Close()
-	client := doarama.NewClient(doarama.API_URL, "", "")
+	client := doarama.NewClient(doarama.APIURL, "", "")
 	activityTypes, err := client.ActivityTypes()
 	if err != nil {
 		return err

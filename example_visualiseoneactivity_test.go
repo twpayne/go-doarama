@@ -13,7 +13,7 @@ func Example() (*doarama.Visualisation, error) {
 	apiKey := "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
 	apiName := "Your API Name"
 	userId := "userid"
-	client := doarama.NewClient(doarama.API_URL, apiKey, apiName).Anonymous(userId)
+	client := doarama.NewClient(doarama.APIURL, apiKey, apiName).Anonymous(userId)
 
 	// Open the GPS track
 	filename := "activity GPS filename (GPX or IGC)"

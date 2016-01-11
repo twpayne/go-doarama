@@ -15,7 +15,8 @@ import (
 	"time"
 )
 
-const API_URL = "https://api.doarama.com/api/0.2"
+// APIURL is the Doarama API endpoint.
+const APIURL = "https://api.doarama.com/api/0.2"
 
 // An Error represents a Doarama server error.
 type Error struct {

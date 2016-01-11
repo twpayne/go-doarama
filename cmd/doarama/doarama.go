@@ -215,7 +215,7 @@ func main() {
 	app.Flags = []cli.Flag{
 		cli.StringFlag{
 			Name:   "apiurl",
-			Value:  doarama.API_URL,
+			Value:  doarama.APIURL,
 			Usage:  "Doarama API URL",
 			EnvVar: "DOARAMA_API_URL",
 		},
