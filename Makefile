@@ -9,3 +9,4 @@ all:
 	test -z "$(go fmt -s ./...)"
 	go generate ./...
 	git diff --exit-code
+	golint
