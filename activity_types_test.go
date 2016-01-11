@@ -6,15 +6,15 @@ import (
 
 func TestDefaultActivityTypes(t *testing.T) {
 	for _, at := range []ActivityType{
-		{Id: 0, Name: "Undefined - Ground Based"},
-		{Id: 17, Name: "Snowboard"},
-		{Id: 35, Name: "Fly - Hike + Glide"},
+		{ID: 0, Name: "Undefined - Ground Based"},
+		{ID: 17, Name: "Snowboard"},
+		{ID: 35, Name: "Fly - Hike + Glide"},
 	} {
-		if got, ok := DefaultActivityTypes.Id(at.Name); !ok || got != at.Id {
-			t.Errorf("DefaultActivityTypes.Id(%#v) == %#v, %#v, want %#v, true", at.Name, got, ok, at.Id)
+		if got, ok := DefaultActivityTypes.ID(at.Name); !ok || got != at.ID {
+			t.Errorf("DefaultActivityTypes.ID(%#v) == %#v, %#v, want %#v, true", at.Name, got, ok, at.ID)
 		}
-		if got, ok := DefaultActivityTypes.Name(at.Id); !ok || got != at.Name {
-			t.Errorf("DefaultActivityTypes.Name(%#v) == %#v, %#v, want %#v, true", at.Id, got, ok, at.Name)
+		if got, ok := DefaultActivityTypes.Name(at.ID); !ok || got != at.Name {
+			t.Errorf("DefaultActivityTypes.Name(%#v) == %#v, %#v, want %#v, true", at.ID, got, ok, at.Name)
 		}
 	}
 }

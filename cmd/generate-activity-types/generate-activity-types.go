@@ -18,12 +18,12 @@ var tmpl = template.Must(template.New("gat").Parse("" +
 	"\n" +
 	"// Activity types\n" +
 	"const (\n" +
-	"{{range $constName, $id := .ConstActivityIds}}\t{{$constName}} = {{$id}}\n" +
+	"{{range $constName, $id := .ConstActivityIDs}}\t{{$constName}} = {{$id}}\n" +
 	"{{end}})\n" +
 	"\n" +
 	"// DefaultActivityTypes\n" +
 	"var DefaultActivityTypes = ActivityTypes{\n" +
-	"{{range $at := .ActivityTypes}}\t{Id: {{$at.Id}}, Name: {{$at.Name | printf \"%#v\"}}},\n" +
+	"{{range $at := .ActivityTypes}}\t{ID: {{$at.ID}}, Name: {{$at.Name | printf \"%#v\"}}},\n" +
 	"{{end}}}\n" +
 	"\n" +
 	"//go:generate go run cmd/generate-activity-types/generate-activity-types.go -o {{.Filename}}\n",
@@ -71,13 +71,13 @@ func pad(s string, n int) string {
 	}
 }
 
-type ById doarama.ActivityTypes
+type ByID doarama.ActivityTypes
 
-func (ats ById) Len() int           { return len(ats) }
-func (ats ById) Less(i, j int) bool { return ats[i].Id < ats[j].Id }
-func (ats ById) Swap(i, j int)      { ats[i], ats[j] = ats[j], ats[i] }
+func (ats ByID) Len() int           { return len(ats) }
+func (ats ByID) Less(i, j int) bool { return ats[i].ID < ats[j].ID }
+func (ats ByID) Swap(i, j int)      { ats[i], ats[j] = ats[j], ats[i] }
 
-func generateActivityIds(filename string) error {
+func generateActivityIDs(filename string) error {
 	f, err := os.Create(filename)
 	if err != nil {
 		return err
@@ -88,10 +88,10 @@ func generateActivityIds(filename string) error {
 	if err != nil {
 		return err
 	}
-	sort.Sort(ById(activityTypes))
+	sort.Sort(ByID(activityTypes))
 	maxConstLen := 0
 	maxNameLen := 0
-	constActivityIds := make(map[string]int)
+	constActivityIDs := make(map[string]int)
 	for _, at := range activityTypes {
 		maxNameLen = max(maxNameLen, len(at.Name))
 		ss, err := constantize(at.Name)
@@ -99,21 +99,21 @@ func generateActivityIds(filename string) error {
 			return err
 		}
 		for _, s := range ss {
-			constActivityIds[s] = at.Id
+			constActivityIDs[s] = at.ID
 			maxConstLen = max(maxConstLen, len(s))
 		}
 	}
-	paddedConstActivityIds := make(map[string]int)
-	for name, id := range constActivityIds {
-		paddedConstActivityIds[pad(name, maxConstLen)] = id
+	paddedConstActivityIDs := make(map[string]int)
+	for name, id := range constActivityIDs {
+		paddedConstActivityIDs[pad(name, maxConstLen)] = id
 	}
 	if err := tmpl.Execute(f, struct {
 		ActivityTypes    doarama.ActivityTypes
-		ConstActivityIds map[string]int
+		ConstActivityIDs map[string]int
 		Filename         string
 	}{
 		ActivityTypes:    activityTypes,
-		ConstActivityIds: paddedConstActivityIds,
+		ConstActivityIDs: paddedConstActivityIDs,
 		Filename:         filename,
 	}); err != nil {
 		return err
@@ -124,7 +124,7 @@ func generateActivityIds(filename string) error {
 func main() {
 	o := flag.String("o", "", "")
 	flag.Parse()
-	if err := generateActivityIds(*o); err != nil {
+	if err := generateActivityIDs(*o); err != nil {
 		log.Fatal(err)
 	}
 }

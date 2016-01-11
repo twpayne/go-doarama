@@ -43,25 +43,25 @@ type Client struct {
 
 // An ActivityInfo represents the info associated with an activity.
 type ActivityInfo struct {
-	TypeId        int    `json:"activityTypeId,omitempty"`
+	TypeID        int    `json:"activityTypeId,omitempty"`
 	UserName      string `json:"userName,omitempty"`
 	UserAvatarURL string `json:"userAvatarUrl,omitempty"`
 }
 
 // An ActivityType is an activity type.
 type ActivityType struct {
-	Id   int    `json:"id"`
+	ID   int    `json:"id"`
 	Name string `json:"name"`
 }
 
 // An ActivityTypes is an array of ActivityTypes.
 type ActivityTypes []ActivityType
 
-// Id returns the id of the activity type with the given name.
-func (ats ActivityTypes) Id(name string) (int, bool) {
+// ID returns the id of the activity type with the given name.
+func (ats ActivityTypes) ID(name string) (int, bool) {
 	for _, at := range ats {
 		if at.Name == name {
-			return at.Id, true
+			return at.ID, true
 		}
 	}
 	return 0, false
@@ -70,7 +70,7 @@ func (ats ActivityTypes) Id(name string) (int, bool) {
 // Name returns the name of the activity type with the given id.
 func (ats ActivityTypes) Name(id int) (string, bool) {
 	for _, at := range ats {
-		if at.Id == id {
+		if at.ID == id {
 			return at.Name, true
 		}
 	}
@@ -80,7 +80,7 @@ func (ats ActivityTypes) Name(id int) (string, bool) {
 // An Activity represents an activity on the server.
 type Activity struct {
 	c  *Client
-	Id int
+	ID int
 }
 
 // A Coords represents a coordinate.
@@ -132,10 +132,10 @@ func NewClient(apiURL, apiName, apiKey string) *Client {
 }
 
 // Anonymous creates a new client based on c using anonymous authentication.
-func (c *Client) Anonymous(userId string) *Client {
+func (c *Client) Anonymous(userID string) *Client {
 	anonymous := *c
 	anonymous.userHeader = "user-id"
-	anonymous.user = userId
+	anonymous.user = userID
 	return &anonymous
 }
 
@@ -223,7 +223,7 @@ func (c *Client) ActivityTypes() (ActivityTypes, error) {
 func (c *Client) Activity(id int) *Activity {
 	return &Activity{
 		c:  c,
-		Id: id,
+		ID: id,
 	}
 }
 
@@ -245,14 +245,14 @@ func (c *Client) CreateActivity(filename string, gpsTrack io.Reader) (*Activity,
 	}
 	req.Header.Set("Content-Type", w.FormDataContentType())
 	data := struct {
-		Id int `json:"id"`
+		ID int `json:"id"`
 	}{}
 	if err := c.doRequest(req, &data); err != nil {
 		return nil, err
 	}
 	return &Activity{
 		c:  c,
-		Id: data.Id,
+		ID: data.ID,
 	}, nil
 }
 
@@ -288,7 +288,7 @@ func (c *Client) CreateVisualisation(activities []*Activity) (*Visualisation, er
 		ActivityIds: make([]int, len(activities)),
 	}
 	for i, a := range activities {
-		data.ActivityIds[i] = a.Id
+		data.ActivityIds[i] = a.ID
 	}
 	req, err := c.newRequestJSON("POST", c.apiURL+"/visualisation", &data)
 	if err != nil {
@@ -326,11 +326,11 @@ func (a *Activity) Delete() error {
 func (a *Activity) Record(samples []*Sample, altitudeReference string) error {
 	data := struct {
 		Samples           []*Sample `json:"samples"`
-		ActivityId        int       `json:"activityId"`
+		ActivityID        int       `json:"activityId"`
 		AltitudeReference string    `json:"altitudeReference"`
 	}{
 		Samples:           samples,
-		ActivityId:        a.Id,
+		ActivityID:        a.ID,
 		AltitudeReference: altitudeReference,
 	}
 	req, err := a.c.newRequestJSON("POST", a.c.apiURL+"/activity/record", &data)
@@ -357,7 +357,7 @@ func (a *Activity) SetInfo(activityInfo *ActivityInfo) error {
 
 // URL returns the URL for the activity.
 func (a *Activity) URL() string {
-	return a.c.apiURL + "/activity/" + strconv.Itoa(a.Id)
+	return a.c.apiURL + "/activity/" + strconv.Itoa(a.ID)
 }
 
 // AddActivities adds the activities to the visualisation.
@@ -370,7 +370,7 @@ func (v *Visualisation) AddActivities(activities []*Activity) error {
 		ActivityIds:      make([]int, len(activities)),
 	}
 	for i, activity := range activities {
-		data.ActivityIds[i] = activity.Id
+		data.ActivityIds[i] = activity.ID
 	}
 	req, err := v.c.newRequestJSON("POST", v.c.apiURL+"/visualisation/addActivities", &data)
 	if err != nil {

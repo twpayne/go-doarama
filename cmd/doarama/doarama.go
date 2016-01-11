@@ -19,12 +19,12 @@ func newDoaramaClient(c *cli.Context) *doarama.Client {
 
 func newAuthenticatedDoaramaClient(c *cli.Context) (*doarama.Client, error) {
 	client := newDoaramaClient(c)
-	userId := c.GlobalString("userid")
+	userID := c.GlobalString("userid")
 	userKey := c.GlobalString("userkey")
 	switch {
-	case userId != "" && userKey == "":
-		return client.Anonymous(userId), nil
-	case userId == "" && userKey != "":
+	case userID != "" && userKey == "":
+		return client.Anonymous(userID), nil
+	case userID == "" && userKey != "":
 		return client.Delegate(userKey), nil
 	default:
 		return nil, errors.New("exactly one of -userid and -userkey must be specified")
@@ -68,16 +68,16 @@ func activityCreate(c *cli.Context) error {
 	if err != nil {
 		return err
 	}
-	typeId := c.Int("typeid")
+	typeID := c.Int("typeid")
 	for _, arg := range c.Args() {
 		a, err := activityCreateOne(client, arg)
 		if err != nil {
 			log.Print(err)
 			continue
 		}
-		fmt.Printf("ActivityId: %d\n", a.Id)
+		fmt.Printf("ActivityId: %d\n", a.ID)
 		if err := a.SetInfo(&doarama.ActivityInfo{
-			TypeId: typeId,
+			TypeID: typeID,
 		}); err != nil {
 			log.Print(err)
 			continue
@@ -114,7 +114,7 @@ func create(c *cli.Context) error {
 	if err != nil {
 		return err
 	}
-	typeId := c.Int("typeid")
+	typeID := c.Int("typeid")
 	var as []*doarama.Activity
 	for _, arg := range c.Args() {
 		a, err := activityCreateOne(client, arg)
@@ -122,12 +122,12 @@ func create(c *cli.Context) error {
 			break
 		}
 		err = a.SetInfo(&doarama.ActivityInfo{
-			TypeId: typeId,
+			TypeID: typeID,
 		})
 		if err != nil {
 			break
 		}
-		fmt.Printf("ActivityId: %d\n", a.Id)
+		fmt.Printf("ActivityId: %d\n", a.ID)
 		as = append(as, a)
 	}
 	if err != nil {
@@ -163,7 +163,7 @@ func queryActivityTypes(c *cli.Context) error {
 	}
 	sort.Sort(ByName(ats))
 	for _, at := range ats {
-		fmt.Printf("%s: %d\n", at.Name, at.Id)
+		fmt.Printf("%s: %d\n", at.Name, at.ID)
 	}
 	return nil
 }
@@ -240,7 +240,7 @@ func main() {
 			EnvVar: "DOARAMA_USER_KEY",
 		},
 	}
-	typeIdFlag := cli.IntFlag{
+	typeIDFlag := cli.IntFlag{
 		Name:  "typeid",
 		Usage: "type id",
 	}
@@ -280,7 +280,7 @@ func main() {
 					Usage:   "Creates an activity from one or more tracklogs",
 					Action:  logError(activityCreate),
 					Flags: []cli.Flag{
-						typeIdFlag,
+						typeIDFlag,
 					},
 				},
 				{
@@ -297,7 +297,7 @@ func main() {
 			Usage:   "Creates a visualisation URL from one or more tracklogs",
 			Action:  logError(create),
 			Flags: []cli.Flag{
-				typeIdFlag,
+				typeIDFlag,
 				nameFlag,
 				avatarFlag,
 				avatarBaseUrlFlag,
