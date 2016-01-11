@@ -1,5 +1,7 @@
 # doarama.go
 
+[![Build Status](https://travis-ci.org/twpayne/go-doarama.svg?branch=master)](https://travis-ci.org/twpayne/go-doarama)
+
 doarama.go is a Go client library for the [Doarama GPS track
 visualizer](http://www.doarama.com/).
 
