@@ -5,6 +5,7 @@ visualizer](http://www.doarama.com/).
 
 You should read the [Doarama REST API
 documentation](https://api.doarama.com/api/0.2/docs) before using this library.
+You will need to request an API key.
 
 You can view the API documentation at
 https://godoc.org/github.com/twpayne/go-doarama.
