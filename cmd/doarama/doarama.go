@@ -149,11 +149,11 @@ func create(c *cli.Context) error {
 	return nil
 }
 
-type ByName doarama.ActivityTypes
+type byName doarama.ActivityTypes
 
-func (ats ByName) Len() int           { return len(ats) }
-func (ats ByName) Less(i, j int) bool { return ats[i].Name < ats[j].Name }
-func (ats ByName) Swap(i, j int)      { ats[i], ats[j] = ats[j], ats[i] }
+func (ats byName) Len() int           { return len(ats) }
+func (ats byName) Less(i, j int) bool { return ats[i].Name < ats[j].Name }
+func (ats byName) Swap(i, j int)      { ats[i], ats[j] = ats[j], ats[i] }
 
 func queryActivityTypes(c *cli.Context) error {
 	client := newDoaramaClient(c)
@@ -161,7 +161,7 @@ func queryActivityTypes(c *cli.Context) error {
 	if err != nil {
 		return err
 	}
-	sort.Sort(ByName(ats))
+	sort.Sort(byName(ats))
 	for _, at := range ats {
 		fmt.Printf("%s: %d\n", at.Name, at.ID)
 	}
