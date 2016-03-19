@@ -71,11 +71,11 @@ func pad(s string, n int) string {
 	}
 }
 
-type ByID doarama.ActivityTypes
+type byID doarama.ActivityTypes
 
-func (ats ByID) Len() int           { return len(ats) }
-func (ats ByID) Less(i, j int) bool { return ats[i].ID < ats[j].ID }
-func (ats ByID) Swap(i, j int)      { ats[i], ats[j] = ats[j], ats[i] }
+func (ats byID) Len() int           { return len(ats) }
+func (ats byID) Less(i, j int) bool { return ats[i].ID < ats[j].ID }
+func (ats byID) Swap(i, j int)      { ats[i], ats[j] = ats[j], ats[i] }
 
 func generateActivityIDs(filename string) error {
 	f, err := os.Create(filename)
@@ -88,7 +88,7 @@ func generateActivityIDs(filename string) error {
 	if err != nil {
 		return err
 	}
-	sort.Sort(ByID(activityTypes))
+	sort.Sort(byID(activityTypes))
 	maxConstLen := 0
 	maxNameLen := 0
 	constActivityIDs := make(map[string]int)
