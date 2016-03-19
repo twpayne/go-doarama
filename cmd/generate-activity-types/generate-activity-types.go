@@ -54,9 +54,8 @@ func constantize(s string) ([]string, error) {
 func max(x, y int) int {
 	if x > y {
 		return x
-	} else {
-		return y
 	}
+	return y
 }
 
 func pad(s string, n int) string {
