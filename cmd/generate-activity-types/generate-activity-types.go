@@ -21,7 +21,7 @@ var tmpl = template.Must(template.New("gat").Parse("" +
 	"{{range $constName, $id := .ConstActivityIDs}}\t{{$constName}} = {{$id}}\n" +
 	"{{end}})\n" +
 	"\n" +
-	"// DefaultActivityTypes\n" +
+	"// DefaultActivityTypes contains the default activity types.\n" +
 	"var DefaultActivityTypes = ActivityTypes{\n" +
 	"{{range $at := .ActivityTypes}}\t{ID: {{$at.ID}}, Name: {{$at.Name | printf \"%#v\"}}},\n" +
 	"{{end}}}\n" +

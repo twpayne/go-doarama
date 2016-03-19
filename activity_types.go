@@ -54,7 +54,7 @@ const (
 	WalkTrek             = 2
 )
 
-// DefaultActivityTypes
+// DefaultActivityTypes contains the default activity types.
 var DefaultActivityTypes = ActivityTypes{
 	{ID: 0, Name: "Undefined - Ground Based"},
 	{ID: 1, Name: "Walk - Fitness"},
