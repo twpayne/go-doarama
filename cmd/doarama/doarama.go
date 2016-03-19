@@ -256,7 +256,7 @@ func main() {
 		Name:  "avatarbaseurl",
 		Usage: "avatar base URL",
 	}
-	fixedAspectFlag := cli.BoolTFlag{
+	fixedAspectFlag := cli.BoolFlag{
 		Name:  "fixedaspect",
 		Usage: "fixed aspect",
 	}
