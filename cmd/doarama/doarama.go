@@ -252,7 +252,7 @@ func main() {
 		Name:  "avatar",
 		Usage: "avatar",
 	}
-	avatarBaseUrlFlag := cli.StringFlag{
+	avatarBaseURLFlag := cli.StringFlag{
 		Name:  "avatarbaseurl",
 		Usage: "avatar base URL",
 	}
@@ -300,7 +300,7 @@ func main() {
 				typeIDFlag,
 				nameFlag,
 				avatarFlag,
-				avatarBaseUrlFlag,
+				avatarBaseURLFlag,
 				fixedAspectFlag,
 				minimalViewFlag,
 				dzmlFlag,
@@ -331,7 +331,7 @@ func main() {
 					Flags: []cli.Flag{
 						nameFlag,
 						avatarFlag,
-						avatarBaseUrlFlag,
+						avatarBaseURLFlag,
 						fixedAspectFlag,
 						minimalViewFlag,
 						dzmlFlag,
