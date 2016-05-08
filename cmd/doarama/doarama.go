@@ -86,7 +86,10 @@ func activityCreate(c *cli.Context) error {
 	if err != nil {
 		return err
 	}
-	typeID := c.Int("typeid")
+	activityType, err := doarama.DefaultActivityTypes.Find(c.String("activitytype"))
+	if err != nil {
+		return err
+	}
 	for _, arg := range c.Args() {
 		a, err := activityCreateOne(client, arg)
 		if err != nil {
@@ -95,7 +98,7 @@ func activityCreate(c *cli.Context) error {
 		}
 		fmt.Printf("ActivityId: %d\n", a.ID)
 		if err := a.SetInfo(&doarama.ActivityInfo{
-			TypeID: typeID,
+			TypeID: activityType.ID,
 		}); err != nil {
 			log.Print(err)
 			continue
@@ -132,7 +135,10 @@ func create(c *cli.Context) error {
 	if err != nil {
 		return err
 	}
-	typeID := c.Int("typeid")
+	activityType, err := doarama.DefaultActivityTypes.Find(c.String("activitytype"))
+	if err != nil {
+		return err
+	}
 	var as []*doarama.Activity
 	for _, arg := range c.Args() {
 		a, err := activityCreateOne(client, arg)
@@ -140,7 +146,7 @@ func create(c *cli.Context) error {
 			break
 		}
 		err = a.SetInfo(&doarama.ActivityInfo{
-			TypeID: typeID,
+			TypeID: activityType.ID,
 		})
 		if err != nil {
 			break
@@ -258,9 +264,9 @@ func main() {
 			EnvVar: "DOARAMA_USER_KEY",
 		},
 	}
-	typeIDFlag := cli.IntFlag{
-		Name:  "typeid",
-		Usage: "type id",
+	activityTypeFlag := cli.StringFlag{
+		Name:  "activitytype",
+		Usage: "activity type",
 	}
 	nameFlag := cli.StringSliceFlag{
 		Name:  "name",
@@ -298,7 +304,7 @@ func main() {
 					Usage:   "Creates an activity from one or more tracklogs",
 					Action:  logError(activityCreate),
 					Flags: []cli.Flag{
-						typeIDFlag,
+						activityTypeFlag,
 					},
 				},
 				{
@@ -315,7 +321,7 @@ func main() {
 			Usage:   "Creates a visualisation URL from one or more tracklogs",
 			Action:  logError(create),
 			Flags: []cli.Flag{
-				typeIDFlag,
+				activityTypeFlag,
 				nameFlag,
 				avatarFlag,
 				avatarBaseURLFlag,

@@ -15,7 +15,8 @@ You must set your Doarama API credentials before running the `doarama` command.
 
 ## How to create a visualisation URL of one or more activities in a single step
 
-    $ doarama create --typeid=29 \
+    $ doarama create \
+          --activitytype=paraglide \
           --name="Tom Payne" \
           --name="Christian Erne" \
           2015-04-12-XCT-TPA-01.igc \
@@ -30,7 +31,7 @@ You must set your Doarama API credentials before running the `doarama` command.
 Upload an activity and set its [activity type
 id](https://api.doarama.com/api/0.2/activityType):
 
-    $ doarama activity create --typeid=29 2015-08-02-FLY-5094-01.IGC
+    $ doarama activity create --activitytype paraglide 2015-08-02-FLY-5094-01.IGC
     ActivityId: 479049
 
 You can specify multiple tracklog files on the command line to create multiple
