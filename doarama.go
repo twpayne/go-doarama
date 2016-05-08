@@ -12,6 +12,7 @@ import (
 	"net/http"
 	"net/url"
 	"strconv"
+	"strings"
 	"time"
 )
 
@@ -29,6 +30,30 @@ type Error struct {
 // Error returns a string representation of the error.
 func (e Error) Error() string {
 	return fmt.Sprintf("doarama: %d %s: %s: %s", e.HTTPStatusCode, e.HTTPStatus, e.Status, e.Message)
+}
+
+// An ErrAmbiguousActivityType is returned when an activity type is ambiguous.
+type ErrAmbiguousActivityType struct {
+	S       string
+	Matches []ActivityType
+}
+
+// Error implements error.
+func (e *ErrAmbiguousActivityType) Error() string {
+	candidates := make([]string, len(e.Matches))
+	for i, m := range e.Matches {
+		candidates[i] = fmt.Sprintf("%q", m.Name)
+	}
+	return fmt.Sprintf("ambiguous activity type %q, candidates are %s", e.S, strings.Join(candidates, ", "))
+}
+
+// An ErrUnknownActivityType is returned when an activity type is unknown.
+type ErrUnknownActivityType struct {
+	S string
+}
+
+func (e *ErrUnknownActivityType) Error() string {
+	return fmt.Sprintf("unknown activity type %q", e.S)
 }
 
 // A Client is an opaque type for a Doarama client.
@@ -57,24 +82,50 @@ type ActivityType struct {
 // An ActivityTypes is an array of ActivityTypes.
 type ActivityTypes []ActivityType
 
-// ID returns the id of the activity type with the given name.
-func (ats ActivityTypes) ID(name string) (int, bool) {
+// Find returns the activity type that most closely matches s.
+func (ats ActivityTypes) Find(s string) (ActivityType, error) {
+	if id, err := strconv.Atoi(s); err == nil {
+		for _, at := range ats {
+			if at.ID == id {
+				return at, nil
+			}
+		}
+		return ActivityType{}, &ErrUnknownActivityType{S: s}
+	}
+	var matches []ActivityType
 	for _, at := range ats {
-		if at.Name == name {
-			return at.ID, true
+		if strings.Contains(strings.ToLower(at.Name), strings.ToLower(s)) {
+			matches = append(matches, at)
 		}
 	}
-	return 0, false
+	switch len(matches) {
+	case 0:
+		return ActivityType{}, &ErrUnknownActivityType{S: s}
+	case 1:
+		return matches[0], nil
+	default:
+		return ActivityType{}, &ErrAmbiguousActivityType{S: s, Matches: matches}
+	}
 }
 
-// Name returns the name of the activity type with the given id.
-func (ats ActivityTypes) Name(id int) (string, bool) {
+// FindByName returns the activity type with the given name.
+func (ats ActivityTypes) FindByName(name string) (ActivityType, bool) {
 	for _, at := range ats {
-		if at.ID == id {
-			return at.Name, true
+		if at.Name == name {
+			return at, true
 		}
 	}
-	return "", false
+	return ActivityType{}, false
+}
+
+// FindByID returns the activity type with the given id.
+func (ats ActivityTypes) FindByID(id int) (ActivityType, bool) {
+	for _, at := range ats {
+		if at.ID == id {
+			return at, true
+		}
+	}
+	return ActivityType{}, false
 }
 
 // An Activity represents an activity on the server.
