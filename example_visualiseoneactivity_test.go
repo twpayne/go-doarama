@@ -10,10 +10,11 @@ import (
 
 func Example() {
 	// Create the client using anonymous authentication
-	apiKey := "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
-	apiName := "Your API Name"
-	userID := "userid"
-	client := doarama.NewClient(doarama.APIURL, apiKey, apiName).Anonymous(userID)
+	client := doarama.NewClient(
+		doarama.APIKey("xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"),
+		doarama.APIName("Your API Name"),
+		doarama.Anonymous("userid"),
+	)
 
 	// Open the GPS track
 	filename := "activity GPS filename (GPX or IGC)"

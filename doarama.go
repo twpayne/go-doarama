@@ -15,8 +15,8 @@ import (
 	"time"
 )
 
-// APIURL is the Doarama API endpoint.
-const APIURL = "https://api.doarama.com/api/0.2"
+// DefaultAPIURL is the default Doarama API endpoint.
+const DefaultAPIURL = "https://api.doarama.com/api/0.2"
 
 // An Error represents a Doarama server error.
 type Error struct {
@@ -36,7 +36,7 @@ type Client struct {
 	apiName    string
 	apiKey     string
 	apiURL     string
-	client     *http.Client
+	httpClient *http.Client
 	userHeader string
 	user       string
 }
@@ -121,30 +121,19 @@ type VisualisationURLOptions struct {
 	DZML          string
 }
 
+// An Option sets an option on a client.
+type Option func(*Client)
+
 // NewClient creates a new unauthenticated Doarama client.
-func NewClient(apiURL, apiName, apiKey string) *Client {
-	return &Client{
-		apiName: apiName,
-		apiKey:  apiKey,
-		apiURL:  apiURL,
-		client:  &http.Client{},
+func NewClient(options ...Option) *Client {
+	c := &Client{
+		apiURL:     DefaultAPIURL,
+		httpClient: &http.Client{},
 	}
-}
-
-// Anonymous creates a new client based on c using anonymous authentication.
-func (c *Client) Anonymous(userID string) *Client {
-	anonymous := *c
-	anonymous.userHeader = "user-id"
-	anonymous.user = userID
-	return &anonymous
-}
-
-// Delegate creates a new client based on c using delegate authentication.
-func (c *Client) Delegate(userKey string) *Client {
-	delegate := *c
-	delegate.userHeader = "user-key"
-	delegate.user = userKey
-	return &delegate
+	for _, option := range options {
+		option(c)
+	}
+	return c
 }
 
 // newRequest creates an authenticated HTTP request.
@@ -176,7 +165,7 @@ func (c *Client) newRequestJSON(method, urlStr string, v interface{}) (*http.Req
 
 // doRequest performs an HTTP request and unmarshals the JSON response.
 func (c *Client) doRequest(req *http.Request, v interface{}) error {
-	resp, err := c.client.Do(req)
+	resp, err := c.httpClient.Do(req)
 	if err != nil {
 		return err
 	}
@@ -306,6 +295,50 @@ func (c *Client) Visualisation(key string) *Visualisation {
 	return &Visualisation{
 		c:   c,
 		Key: key,
+	}
+}
+
+// Anonymous sets anonymous authentication.
+func Anonymous(userID string) Option {
+	return func(c *Client) {
+		c.userHeader = "user-id"
+		c.user = userID
+	}
+}
+
+// APIName sets the API name.
+func APIName(apiName string) Option {
+	return func(c *Client) {
+		c.apiName = apiName
+	}
+}
+
+// APIKey sets the API key.
+func APIKey(apiKey string) Option {
+	return func(c *Client) {
+		c.apiKey = apiKey
+	}
+}
+
+// APIURL sets the API URL.
+func APIURL(apiURL string) Option {
+	return func(c *Client) {
+		c.apiURL = apiURL
+	}
+}
+
+// HTTPClient sets the http.Client used for requests.
+func HTTPClient(httpClient *http.Client) Option {
+	return func(c *Client) {
+		c.httpClient = httpClient
+	}
+}
+
+// Delegate sets delegate authentication.
+func Delegate(userKey string) Option {
+	return func(c *Client) {
+		c.userHeader = "user-key"
+		c.user = userKey
 	}
 }
 

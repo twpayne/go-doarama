@@ -13,22 +13,40 @@ import (
 	"github.com/twpayne/go-doarama"
 )
 
-func newDoaramaClient(c *cli.Context) *doarama.Client {
-	return doarama.NewClient(c.GlobalString("apiurl"), c.GlobalString("apiname"), c.GlobalString("apikey"))
+func baseDoaramaOptions(c *cli.Context) []doarama.Option {
+	return []doarama.Option{
+		doarama.APIURL(c.GlobalString("apiurl")),
+		doarama.APIName(c.GlobalString("apiname")),
+		doarama.APIKey(c.GlobalString("apikey")),
+	}
 }
 
-func newAuthenticatedDoaramaClient(c *cli.Context) (*doarama.Client, error) {
-	client := newDoaramaClient(c)
+func newDoaramaClient(c *cli.Context) *doarama.Client {
+	options := baseDoaramaOptions(c)
+	return doarama.NewClient(options...)
+}
+
+func newAuthenticatedDoaramaOptions(c *cli.Context) ([]doarama.Option, error) {
+	options := baseDoaramaOptions(c)
 	userID := c.GlobalString("userid")
 	userKey := c.GlobalString("userkey")
 	switch {
 	case userID != "" && userKey == "":
-		return client.Anonymous(userID), nil
+		options = append(options, doarama.Anonymous(userID))
 	case userID == "" && userKey != "":
-		return client.Delegate(userKey), nil
+		options = append(options, doarama.Delegate(userKey))
 	default:
 		return nil, errors.New("exactly one of -userid and -userkey must be specified")
 	}
+	return options, nil
+}
+
+func newAuthenticatedDoaramaClient(c *cli.Context) (*doarama.Client, error) {
+	options, err := newAuthenticatedDoaramaOptions(c)
+	if err != nil {
+		return nil, err
+	}
+	return doarama.NewClient(options...), nil
 }
 
 func newVisualisationURLOptions(c *cli.Context) *doarama.VisualisationURLOptions {
@@ -215,7 +233,7 @@ func main() {
 	app.Flags = []cli.Flag{
 		cli.StringFlag{
 			Name:   "apiurl",
-			Value:  doarama.APIURL,
+			Value:  doarama.DefaultAPIURL,
 			Usage:  "Doarama API URL",
 			EnvVar: "DOARAMA_API_URL",
 		},
