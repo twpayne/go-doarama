@@ -37,12 +37,12 @@ func TestWrite(t *testing.T) {
 				"<gpx version=\"1.1\" creator=\"https://github.com/twpayne/go-doarama\">" +
 				"<trk>" +
 				"<trkseg>" +
-				"<trkpt lat=\"47.798850\" lon=\"13.048400\">" +
-				"<ele>430.000000</ele>" +
+				"<trkpt lat=\"47.79885\" lon=\"13.0484\">" +
+				"<ele>430</ele>" +
 				"<time>2015-07-05T09:30:00Z</time>" +
 				"</trkpt>" +
-				"<trkpt lat=\"47.804130\" lon=\"13.110910\">" +
-				"<ele>1272.000000</ele>" +
+				"<trkpt lat=\"47.80413\" lon=\"13.11091\">" +
+				"<ele>1272</ele>" +
 				"<time>2015-07-05T11:15:00Z</time>" +
 				"</trkpt>" +
 				"</trkseg>" +

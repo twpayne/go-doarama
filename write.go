@@ -1,38 +1,39 @@
 package doarama
 
 import (
+	"encoding/xml"
 	"fmt"
 	"io"
 	"time"
+
+	"github.com/twpayne/go-gpx"
 )
 
 // WriteGPX writes samples to w in GPX format.
 func WriteGPX(w io.Writer, samples []Sample) error {
-	if _, err := fmt.Fprintf(w, ""+
-		"<gpx version=\"1.1\" creator=\"https://github.com/twpayne/go-doarama\">"+
-		"<trk>"+
-		"<trkseg>"); err != nil {
-		return err
-	}
+	var trkPt []*gpx.WptType
 	for _, s := range samples {
-		if _, err := fmt.Fprintf(w, ""+
-			"<trkpt lat=\"%f\" lon=\"%f\">"+
-			"<ele>%f</ele>"+
-			"<time>%s</time>"+
-			"</trkpt>",
-			s.Coords.Latitude, s.Coords.Longitude,
-			s.Coords.Altitude,
-			s.Time.Time().Format("2006-01-02T15:04:05Z")); err != nil {
-			return err
-		}
+		trkPt = append(trkPt, &gpx.WptType{
+			Lat:  s.Coords.Latitude,
+			Lon:  s.Coords.Longitude,
+			Ele:  s.Coords.Altitude,
+			Time: s.Time.Time(),
+		})
 	}
-	if _, err := fmt.Fprintf(w, ""+
-		"</trkseg>"+
-		"</trk>"+
-		"</gpx>"); err != nil {
-		return err
+	t := gpx.T{
+		Version: "1.1",
+		Creator: "https://github.com/twpayne/go-doarama",
+		Trk: []*gpx.TrkType{
+			&gpx.TrkType{
+				TrkSeg: []*gpx.TrkSegType{
+					&gpx.TrkSegType{
+						TrkPt: trkPt,
+					},
+				},
+			},
+		},
 	}
-	return nil
+	return xml.NewEncoder(w).EncodeElement(t, gpx.StartElement)
 }
 
 // dmmh splits x into degrees, milliminutes, and a hemisphere.
