@@ -1,7 +1,6 @@
 package doarama
 
 import (
-	"encoding/xml"
 	"fmt"
 	"io"
 	"time"
@@ -20,7 +19,7 @@ func WriteGPX(w io.Writer, samples []Sample) error {
 			Time: s.Time.Time(),
 		})
 	}
-	t := gpx.T{
+	return (&gpx.T{
 		Version: "1.1",
 		Creator: "https://github.com/twpayne/go-doarama",
 		Trk: []*gpx.TrkType{
@@ -32,8 +31,7 @@ func WriteGPX(w io.Writer, samples []Sample) error {
 				},
 			},
 		},
-	}
-	return xml.NewEncoder(w).EncodeElement(t, gpx.StartElement)
+	}).Write(w)
 }
 
 // dmmh splits x into degrees, milliminutes, and a hemisphere.

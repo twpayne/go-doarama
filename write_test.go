@@ -34,7 +34,7 @@ func TestWrite(t *testing.T) {
 				},
 			},
 			wantGPX: "" +
-				"<gpx version=\"1.1\" creator=\"https://github.com/twpayne/go-doarama\">" +
+				"<gpx version=\"1.1\" creator=\"https://github.com/twpayne/go-doarama\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns=\"http://www.topografix.com/GPX/1/1\" xsi:schemaLocation=\"http://www.topografix.com/GPX/1/1 http://www.topografix.com/GPX/1/1/gpx.xsd\">" +
 				"<trk>" +
 				"<trkseg>" +
 				"<trkpt lat=\"47.79885\" lon=\"13.0484\">" +
