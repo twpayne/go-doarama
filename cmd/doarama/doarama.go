@@ -141,7 +141,8 @@ func create(c *cli.Context) error {
 	}
 	var as []*doarama.Activity
 	for _, arg := range c.Args() {
-		a, err := activityCreateOne(client, arg)
+		var a *doarama.Activity
+		a, err = activityCreateOne(client, arg)
 		if err != nil {
 			break
 		}
@@ -199,7 +200,8 @@ func visualisationCreate(c *cli.Context) error {
 	}
 	var as []*doarama.Activity
 	for _, arg := range c.Args() {
-		id64, err := strconv.ParseInt(arg, 10, 0)
+		var id64 int64
+		id64, err = strconv.ParseInt(arg, 10, 0)
 		if err != nil {
 			return err
 		}

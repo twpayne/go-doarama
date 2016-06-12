@@ -275,7 +275,7 @@ func (c *Client) CreateActivity(filename string, gpsTrack io.Reader) (*Activity,
 	if err != nil {
 		return nil, err
 	}
-	if _, err := io.Copy(fw, gpsTrack); err != nil {
+	if _, err = io.Copy(fw, gpsTrack); err != nil {
 		return nil, err
 	}
 	w.Close()
