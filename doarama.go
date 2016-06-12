@@ -221,8 +221,10 @@ func (c *Client) doRequest(req *http.Request, v interface{}) error {
 		return err
 	}
 	body, err := ioutil.ReadAll(resp.Body)
-	resp.Body.Close()
 	if err != nil {
+		return err
+	}
+	if err := resp.Body.Close(); err != nil {
 		return err
 	}
 	if resp.StatusCode < 200 || 300 <= resp.StatusCode {
@@ -230,7 +232,9 @@ func (c *Client) doRequest(req *http.Request, v interface{}) error {
 			Status  string `json:"status"`
 			Message string `json:"message"`
 		}
-		json.Unmarshal(body, &r)
+		if err := json.Unmarshal(body, &r); err != nil {
+			return err
+		}
 		return Error{
 			HTTPStatusCode: resp.StatusCode,
 			HTTPStatus:     resp.Status,
@@ -278,7 +282,9 @@ func (c *Client) CreateActivity(filename string, gpsTrack io.Reader) (*Activity,
 	if _, err = io.Copy(fw, gpsTrack); err != nil {
 		return nil, err
 	}
-	w.Close()
+	if err := w.Close(); err != nil {
+		return nil, err
+	}
 	req, err := c.newRequest("POST", c.apiURL+"/activity", &b)
 	if err != nil {
 		return nil, err
