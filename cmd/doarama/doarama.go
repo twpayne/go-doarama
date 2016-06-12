@@ -226,14 +226,6 @@ func visualisationURL(c *cli.Context) error {
 	return nil
 }
 
-func logError(f func(*cli.Context) error) func(*cli.Context) {
-	return func(c *cli.Context) {
-		if err := f(c); err != nil {
-			log.Fatal(err)
-		}
-	}
-}
-
 func main() {
 	app := cli.NewApp()
 	app.Name = "doarama"
@@ -304,7 +296,7 @@ func main() {
 					Name:    "create",
 					Aliases: []string{"c"},
 					Usage:   "Creates an activity from one or more tracklogs",
-					Action:  logError(activityCreate),
+					Action:  activityCreate,
 					Flags: []cli.Flag{
 						activityTypeFlag,
 					},
@@ -313,7 +305,7 @@ func main() {
 					Name:    "delete",
 					Aliases: []string{"d"},
 					Usage:   "Deletes one or more activities by id",
-					Action:  logError(activityDelete),
+					Action:  activityDelete,
 				},
 			},
 		},
@@ -321,7 +313,7 @@ func main() {
 			Name:    "create",
 			Aliases: []string{"c"},
 			Usage:   "Creates a visualisation URL from one or more tracklogs",
-			Action:  logError(create),
+			Action:  create,
 			Flags: []cli.Flag{
 				activityTypeFlag,
 				nameFlag,
@@ -336,7 +328,7 @@ func main() {
 			Name:    "query-activity-types",
 			Aliases: []string{"qat"},
 			Usage:   "Queries activity types",
-			Action:  logError(queryActivityTypes),
+			Action:  queryActivityTypes,
 		},
 		{
 			Name:    "visualisation",
@@ -347,13 +339,13 @@ func main() {
 					Name:    "create",
 					Aliases: []string{"c"},
 					Usage:   "Creates a visualisation from a list of activities",
-					Action:  logError(visualisationCreate),
+					Action:  visualisationCreate,
 				},
 				{
 					Name:    "url",
 					Aliases: []string{"u"},
 					Usage:   "Creates a visualisation URL from a visualisation key",
-					Action:  logError(visualisationURL),
+					Action:  visualisationURL,
 					Flags: []cli.Flag{
 						nameFlag,
 						avatarFlag,
