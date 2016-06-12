@@ -106,7 +106,7 @@ func generateActivityIDs(filename string) error {
 	for name, id := range constActivityIDs {
 		paddedConstActivityIDs[pad(name, maxConstLen)] = id
 	}
-	if err := tmpl.Execute(f, struct {
+	return tmpl.Execute(f, struct {
 		ActivityTypes    doarama.ActivityTypes
 		ConstActivityIDs map[string]int
 		Filename         string
@@ -114,10 +114,7 @@ func generateActivityIDs(filename string) error {
 		ActivityTypes:    activityTypes,
 		ConstActivityIDs: paddedConstActivityIDs,
 		Filename:         filename,
-	}); err != nil {
-		return err
-	}
-	return nil
+	})
 }
 
 func main() {
