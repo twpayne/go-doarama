@@ -14,6 +14,9 @@ import (
 	"strconv"
 	"strings"
 	"time"
+
+	"golang.org/x/net/context"
+	"golang.org/x/net/context/ctxhttp"
 )
 
 // DefaultAPIURL is the default Doarama API endpoint.
@@ -215,8 +218,8 @@ func (c *Client) newRequestJSON(method, urlStr string, v interface{}) (*http.Req
 }
 
 // doRequest performs an HTTP request and unmarshals the JSON response.
-func (c *Client) doRequest(req *http.Request, v interface{}) error {
-	resp, err := c.httpClient.Do(req)
+func (c *Client) doRequest(ctx context.Context, req *http.Request, v interface{}) error {
+	resp, err := ctxhttp.Do(ctx, c.httpClient, req)
 	if err != nil {
 		return err
 	}
@@ -251,13 +254,13 @@ func (c *Client) doRequest(req *http.Request, v interface{}) error {
 }
 
 // ActivityTypes returns an array of activity types.
-func (c *Client) ActivityTypes() (ActivityTypes, error) {
+func (c *Client) ActivityTypes(ctx context.Context) (ActivityTypes, error) {
 	req, err := c.newRequest("GET", c.apiURL+"/activityType", nil)
 	if err != nil {
 		return nil, err
 	}
 	var activityTypes ActivityTypes
-	if err := c.doRequest(req, &activityTypes); err != nil {
+	if err := c.doRequest(ctx, req, &activityTypes); err != nil {
 		return nil, err
 	}
 	return activityTypes, nil
@@ -272,7 +275,7 @@ func (c *Client) Activity(id int) *Activity {
 }
 
 // CreateActivity creates a new activity.
-func (c *Client) CreateActivity(filename string, gpsTrack io.Reader) (*Activity, error) {
+func (c *Client) CreateActivity(ctx context.Context, filename string, gpsTrack io.Reader) (*Activity, error) {
 	var b bytes.Buffer
 	w := multipart.NewWriter(&b)
 	fw, err := w.CreateFormFile("gps_track", filename)
@@ -293,7 +296,7 @@ func (c *Client) CreateActivity(filename string, gpsTrack io.Reader) (*Activity,
 	data := struct {
 		ID int `json:"id"`
 	}{}
-	if err := c.doRequest(req, &data); err != nil {
+	if err := c.doRequest(ctx, req, &data); err != nil {
 		return nil, err
 	}
 	return &Activity{
@@ -303,7 +306,7 @@ func (c *Client) CreateActivity(filename string, gpsTrack io.Reader) (*Activity,
 }
 
 // CreateLiveActivity creates a new live activity.
-func (c *Client) CreateLiveActivity(startLatitude, startLongitude float64, startTime Timestamp) (*Activity, error) {
+func (c *Client) CreateLiveActivity(ctx context.Context, startLatitude, startLongitude float64, startTime Timestamp) (*Activity, error) {
 	var data = struct {
 		StartLatitude  float64   `json:"startLatitude"`
 		StartLongitude float64   `json:"startLongitude"`
@@ -320,14 +323,14 @@ func (c *Client) CreateLiveActivity(startLatitude, startLongitude float64, start
 	a := &Activity{
 		c: c,
 	}
-	if err := c.doRequest(req, a); err != nil {
+	if err := c.doRequest(ctx, req, a); err != nil {
 		return nil, err
 	}
 	return a, nil
 }
 
 // CreateVisualisation creates a new visualiztion.
-func (c *Client) CreateVisualisation(activities []*Activity) (*Visualisation, error) {
+func (c *Client) CreateVisualisation(ctx context.Context, activities []*Activity) (*Visualisation, error) {
 	data := struct {
 		ActivityIds []int `json:"activityIds"`
 	}{
@@ -341,7 +344,7 @@ func (c *Client) CreateVisualisation(activities []*Activity) (*Visualisation, er
 		return nil, err
 	}
 	v := &Visualisation{c: c}
-	if err := c.doRequest(req, v); err != nil {
+	if err := c.doRequest(ctx, req, v); err != nil {
 		return nil, err
 	}
 	return v, nil
@@ -400,12 +403,12 @@ func Delegate(userKey string) Option {
 }
 
 // Delete deletes the activity.
-func (a *Activity) Delete() error {
+func (a *Activity) Delete(ctx context.Context) error {
 	req, err := a.c.newRequest("DELETE", a.URL(), nil)
 	if err != nil {
 		return err
 	}
-	if err := a.c.doRequest(req, nil); err != nil {
+	if err := a.c.doRequest(ctx, req, nil); err != nil {
 		return err
 	}
 	return nil
@@ -413,7 +416,7 @@ func (a *Activity) Delete() error {
 
 // Record records zero or more samples. altitudeReference should normally be
 // "WGS84".
-func (a *Activity) Record(samples []*Sample, altitudeReference string) error {
+func (a *Activity) Record(ctx context.Context, samples []*Sample, altitudeReference string) error {
 	data := struct {
 		Samples           []*Sample `json:"samples"`
 		ActivityID        int       `json:"activityId"`
@@ -427,19 +430,19 @@ func (a *Activity) Record(samples []*Sample, altitudeReference string) error {
 	if err != nil {
 		return err
 	}
-	if err := a.c.doRequest(req, nil); err != nil {
+	if err := a.c.doRequest(ctx, req, nil); err != nil {
 		return err
 	}
 	return nil
 }
 
 // SetInfo sets the info.
-func (a *Activity) SetInfo(activityInfo *ActivityInfo) error {
+func (a *Activity) SetInfo(ctx context.Context, activityInfo *ActivityInfo) error {
 	req, err := a.c.newRequestJSON("POST", a.URL(), activityInfo)
 	if err != nil {
 		return err
 	}
-	if err := a.c.doRequest(req, nil); err != nil {
+	if err := a.c.doRequest(ctx, req, nil); err != nil {
 		return err
 	}
 	return nil
@@ -451,7 +454,7 @@ func (a *Activity) URL() string {
 }
 
 // AddActivities adds the activities to the visualisation.
-func (v *Visualisation) AddActivities(activities []*Activity) error {
+func (v *Visualisation) AddActivities(ctx context.Context, activities []*Activity) error {
 	data := struct {
 		VisualisationKey string `json:"visualisationKey"`
 		ActivityIds      []int  `json:"activityIds"`
@@ -466,7 +469,7 @@ func (v *Visualisation) AddActivities(activities []*Activity) error {
 	if err != nil {
 		return err
 	}
-	if err := v.c.doRequest(req, nil); err != nil {
+	if err := v.c.doRequest(ctx, req, nil); err != nil {
 		return err
 	}
 	return nil

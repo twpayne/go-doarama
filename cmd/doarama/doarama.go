@@ -11,6 +11,7 @@ import (
 
 	"github.com/codegangsta/cli"
 	"github.com/twpayne/go-doarama"
+	"golang.org/x/net/context"
 )
 
 func baseDoaramaOptions(c *cli.Context) []doarama.Option {
@@ -72,16 +73,17 @@ func newVisualisationURLOptions(c *cli.Context) *doarama.VisualisationURLOptions
 	return &vuo
 }
 
-func activityCreateOne(client *doarama.Client, filename string) (*doarama.Activity, error) {
+func activityCreateOne(ctx context.Context, client *doarama.Client, filename string) (*doarama.Activity, error) {
 	gpsTrack, err := os.Open(filename)
 	if err != nil {
 		return nil, err
 	}
 	defer gpsTrack.Close()
-	return client.CreateActivity(filepath.Base(filename), gpsTrack)
+	return client.CreateActivity(ctx, filepath.Base(filename), gpsTrack)
 }
 
 func activityCreate(c *cli.Context) error {
+	ctx := context.Background()
 	client, err := newAuthenticatedDoaramaClient(c)
 	if err != nil {
 		return err
@@ -91,13 +93,13 @@ func activityCreate(c *cli.Context) error {
 		return err
 	}
 	for _, arg := range c.Args() {
-		a, err := activityCreateOne(client, arg)
+		a, err := activityCreateOne(ctx, client, arg)
 		if err != nil {
 			log.Print(err)
 			continue
 		}
 		fmt.Printf("ActivityId: %d\n", a.ID)
-		if err := a.SetInfo(&doarama.ActivityInfo{
+		if err := a.SetInfo(ctx, &doarama.ActivityInfo{
 			TypeID: activityType.ID,
 		}); err != nil {
 			log.Print(err)
@@ -108,6 +110,7 @@ func activityCreate(c *cli.Context) error {
 }
 
 func activityDelete(c *cli.Context) error {
+	ctx := context.Background()
 	client, err := newAuthenticatedDoaramaClient(c)
 	if err != nil {
 		return err
@@ -122,7 +125,7 @@ func activityDelete(c *cli.Context) error {
 	}
 	for _, id := range ids {
 		a := client.Activity(id)
-		if err := a.Delete(); err != nil {
+		if err := a.Delete(ctx); err != nil {
 			log.Print(err)
 			continue
 		}
@@ -131,6 +134,7 @@ func activityDelete(c *cli.Context) error {
 }
 
 func create(c *cli.Context) error {
+	ctx := context.Background()
 	client, err := newAuthenticatedDoaramaClient(c)
 	if err != nil {
 		return err
@@ -142,11 +146,11 @@ func create(c *cli.Context) error {
 	var as []*doarama.Activity
 	for _, arg := range c.Args() {
 		var a *doarama.Activity
-		a, err = activityCreateOne(client, arg)
+		a, err = activityCreateOne(ctx, client, arg)
 		if err != nil {
 			break
 		}
-		err = a.SetInfo(&doarama.ActivityInfo{
+		err = a.SetInfo(ctx, &doarama.ActivityInfo{
 			TypeID: activityType.ID,
 		})
 		if err != nil {
@@ -157,14 +161,14 @@ func create(c *cli.Context) error {
 	}
 	if err != nil {
 		for _, a := range as {
-			a.Delete()
+			a.Delete(ctx)
 		}
 		return err
 	}
 	if len(as) == 0 {
 		return errors.New("no activitiess specified")
 	}
-	v, err := client.CreateVisualisation(as)
+	v, err := client.CreateVisualisation(ctx, as)
 	if err != nil {
 		return err
 	}
@@ -181,8 +185,9 @@ func (ats byName) Less(i, j int) bool { return ats[i].Name < ats[j].Name }
 func (ats byName) Swap(i, j int)      { ats[i], ats[j] = ats[j], ats[i] }
 
 func queryActivityTypes(c *cli.Context) error {
+	ctx := context.Background()
 	client := newDoaramaClient(c)
-	ats, err := client.ActivityTypes()
+	ats, err := client.ActivityTypes(ctx)
 	if err != nil {
 		return err
 	}
@@ -194,6 +199,7 @@ func queryActivityTypes(c *cli.Context) error {
 }
 
 func visualisationCreate(c *cli.Context) error {
+	ctx := context.Background()
 	client, err := newAuthenticatedDoaramaClient(c)
 	if err != nil {
 		return err
@@ -208,7 +214,7 @@ func visualisationCreate(c *cli.Context) error {
 		a := client.Activity(int(id64))
 		as = append(as, a)
 	}
-	v, err := client.CreateVisualisation(as)
+	v, err := client.CreateVisualisation(ctx, as)
 	if err != nil {
 		return err
 	}

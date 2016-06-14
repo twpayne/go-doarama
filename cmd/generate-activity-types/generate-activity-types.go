@@ -11,6 +11,7 @@ import (
 	"text/template"
 
 	"github.com/twpayne/go-doarama"
+	"golang.org/x/net/context"
 )
 
 var tmpl = template.Must(template.New("gat").Parse("" +
@@ -77,13 +78,14 @@ func (ats byID) Less(i, j int) bool { return ats[i].ID < ats[j].ID }
 func (ats byID) Swap(i, j int)      { ats[i], ats[j] = ats[j], ats[i] }
 
 func generateActivityIDs(filename string) error {
+	ctx := context.Background()
 	f, err := os.Create(filename)
 	if err != nil {
 		return err
 	}
 	defer f.Close()
 	client := doarama.NewClient()
-	activityTypes, err := client.ActivityTypes()
+	activityTypes, err := client.ActivityTypes(ctx)
 	if err != nil {
 		return err
 	}

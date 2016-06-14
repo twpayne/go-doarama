@@ -1,12 +1,13 @@
 language: go
 
 go:
-        - 1.4.3
         - 1.5.4
         - 1.6.2
 
 install:
         - go get github.com/codegangsta/cli
         - go get github.com/twpayne/go-gpx
+        - go get golang.org/x/net/context
+        - go get golang.org/x/net/context/ctxhttp
 
 sudo: false

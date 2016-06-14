@@ -6,6 +6,7 @@ import (
 	"path/filepath"
 
 	"github.com/twpayne/go-doarama"
+	"golang.org/x/net/context"
 )
 
 func Example() {
@@ -24,15 +25,17 @@ func Example() {
 	}
 	defer gpsTrack.Close()
 
+	ctx := context.Background()
+
 	// Create the activity
-	activity, err := client.CreateActivity(filepath.Base(filename), gpsTrack)
+	activity, err := client.CreateActivity(ctx, filepath.Base(filename), gpsTrack)
 	if err != nil {
 		return
 	}
 	log.Printf("ActivityId: %d", activity.ID)
 
 	// Set the activity info
-	if err := activity.SetInfo(&doarama.ActivityInfo{
+	if err := activity.SetInfo(ctx, &doarama.ActivityInfo{
 		TypeID: doarama.FlyParaglide,
 	}); err != nil {
 		return
@@ -40,7 +43,7 @@ func Example() {
 
 	// Create the visualisation
 	activities := []*doarama.Activity{activity}
-	visualisation, err := client.CreateVisualisation(activities)
+	visualisation, err := client.CreateVisualisation(ctx, activities)
 	if err != nil {
 		return
 	}
