@@ -2,6 +2,7 @@
 
 [![Build Status](https://travis-ci.org/twpayne/go-doarama.svg?branch=master)](https://travis-ci.org/twpayne/go-doarama)
 [![GoDoc](https://godoc.org/github.com/twpayne/go-doarama?status.svg)](https://godoc.org/github.com/twpayne/go-doarama)
+[![Report Card](https://goreportcard.com/badge/github.com/twpayne/go-doarama)](https://goreportcard.com/report/github.com/twpayne/go-doarama)
 
 `go-doarama` is a Go client library for the [Doarama GPS track
 visualizer](http://www.doarama.com/).
