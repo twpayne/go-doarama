@@ -19,7 +19,7 @@ func WriteGPX(w io.Writer, samples []Sample) error {
 			Time: s.Time.Time(),
 		})
 	}
-	return (&gpx.T{
+	return (&gpx.GPX{
 		Version: "1.1",
 		Creator: "https://github.com/twpayne/go-doarama",
 		Trk: []*gpx.TrkType{
