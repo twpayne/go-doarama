@@ -23,9 +23,9 @@ func WriteGPX(w io.Writer, samples []Sample) error {
 		Version: "1.1",
 		Creator: "https://github.com/twpayne/go-doarama",
 		Trk: []*gpx.TrkType{
-			&gpx.TrkType{
+			{
 				TrkSeg: []*gpx.TrkSegType{
-					&gpx.TrkSegType{
+					{
 						TrkPt: trkPt,
 					},
 				},
