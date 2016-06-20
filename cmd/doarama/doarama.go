@@ -10,18 +10,19 @@ import (
 	"strconv"
 
 	"github.com/twpayne/go-doarama"
+	"github.com/twpayne/go-doarama/doaramacache"
 	"github.com/twpayne/go-doarama/doaramacli"
 	"github.com/urfave/cli"
 	"golang.org/x/net/context"
 )
 
-func activityCreateOne(ctx context.Context, client *doarama.Client, filename string, activityInfo *doarama.ActivityInfo) (*doarama.Activity, error) {
+func activityCreateOne(ctx context.Context, cache doaramacache.ActivityCreator, filename string, activityInfo *doarama.ActivityInfo) (*doarama.Activity, error) {
 	gpsTrack, err := os.Open(filename)
 	if err != nil {
 		return nil, err
 	}
 	defer gpsTrack.Close()
-	return client.CreateActivityWithInfo(ctx, filepath.Base(filename), gpsTrack, activityInfo)
+	return cache.CreateActivityWithInfo(ctx, filepath.Base(filename), gpsTrack, activityInfo)
 }
 
 func activityCreate(c *cli.Context) error {
