@@ -5,6 +5,8 @@ go:
         - 1.6.2
 
 install:
+        - go get github.com/cnf/structhash
+        - go get github.com/mattn/go-sqlite3
         - go get github.com/twpayne/go-gpx
         - go get github.com/urfave/cli
         - go get golang.org/x/net/context
