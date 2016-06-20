@@ -124,23 +124,23 @@ func NewAuthenticatedDoaramaClient(c *cli.Context) (*doarama.Client, error) {
 // from c.
 func NewVisualisationURLOptions(c *cli.Context) *doarama.VisualisationURLOptions {
 	vuo := &doarama.VisualisationURLOptions{}
-	if c.StringSlice("name") != nil {
-		vuo.Names = c.StringSlice("name")
+	if name := c.StringSlice("name"); name != nil {
+		vuo.Names = name
 	}
-	if c.StringSlice("avatar") != nil {
-		vuo.Avatars = c.StringSlice("avatar")
+	if avatar := c.StringSlice("avatar"); avatar != nil {
+		vuo.Avatars = avatar
 	}
-	if c.String("avatarbaseurl") != "" {
-		vuo.AvatarBaseURL = c.String("avatarbaseurl")
+	if avatarBaseURL := c.String("avatarbaseurl"); avatarBaseURL != "" {
+		vuo.AvatarBaseURL = avatarBaseURL
 	}
-	if c.Bool("fixedaspect") {
-		vuo.FixedAspect = c.Bool("fixedaspect")
+	if fixedAspect := c.Bool("fixedaspect"); fixedAspect {
+		vuo.FixedAspect = fixedAspect
 	}
-	if c.Bool("minimalview") {
-		vuo.MinimalView = c.Bool("minimalview")
+	if minimalView := c.Bool("minimalview"); minimalView {
+		vuo.MinimalView = minimalView
 	}
-	if c.String("dzml") != "" {
-		vuo.DZML = c.String("dzml")
+	if dzml := c.String("dzml"); dzml != "" {
+		vuo.DZML = dzml
 	}
 	return vuo
 }
