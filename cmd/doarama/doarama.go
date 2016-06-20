@@ -10,68 +10,10 @@ import (
 	"strconv"
 
 	"github.com/twpayne/go-doarama"
+	"github.com/twpayne/go-doarama/doaramacli"
 	"github.com/urfave/cli"
 	"golang.org/x/net/context"
 )
-
-func baseDoaramaOptions(c *cli.Context) []doarama.Option {
-	return []doarama.Option{
-		doarama.APIURL(c.GlobalString("apiurl")),
-		doarama.APIName(c.GlobalString("apiname")),
-		doarama.APIKey(c.GlobalString("apikey")),
-	}
-}
-
-func newDoaramaClient(c *cli.Context) *doarama.Client {
-	options := baseDoaramaOptions(c)
-	return doarama.NewClient(options...)
-}
-
-func newAuthenticatedDoaramaOptions(c *cli.Context) ([]doarama.Option, error) {
-	options := baseDoaramaOptions(c)
-	userID := c.GlobalString("userid")
-	userKey := c.GlobalString("userkey")
-	switch {
-	case userID != "" && userKey == "":
-		options = append(options, doarama.Anonymous(userID))
-	case userID == "" && userKey != "":
-		options = append(options, doarama.Delegate(userKey))
-	default:
-		return nil, errors.New("exactly one of -userid and -userkey must be specified")
-	}
-	return options, nil
-}
-
-func newAuthenticatedDoaramaClient(c *cli.Context) (*doarama.Client, error) {
-	options, err := newAuthenticatedDoaramaOptions(c)
-	if err != nil {
-		return nil, err
-	}
-	return doarama.NewClient(options...), nil
-}
-
-func newVisualisationURLOptions(c *cli.Context) *doarama.VisualisationURLOptions {
-	var vuo doarama.VisualisationURLOptions
-	if c.StringSlice("name") != nil {
-		vuo.Names = c.StringSlice("name")
-	}
-	if c.StringSlice("avatar") != nil {
-		vuo.Avatars = c.StringSlice("avatar")
-	}
-	if c.String("avatarbaseurl") != "" {
-		vuo.AvatarBaseURL = c.String("avatarbaseurl")
-	}
-	if c.Bool("fixedaspect") {
-		vuo.FixedAspect = c.Bool("fixedaspect")
-	}
-	if c.Bool("minimalview") {
-		vuo.MinimalView = c.Bool("minimalview")
-	}
-	if c.String("dzml") != "" {
-		vuo.DZML = c.String("dzml")
-	}
-	return &vuo
-}
 
 func activityCreateOne(ctx context.Context, client *doarama.Client, filename string) (*doarama.Activity, error) {
 	gpsTrack, err := os.Open(filename)
@@ -84,11 +26,11 @@ func activityCreateOne(ctx context.Context, client *doarama.Client, filename str
 
 func activityCreate(c *cli.Context) error {
 	ctx := context.Background()
-	client, err := newAuthenticatedDoaramaClient(c)
+	client, err := doaramacli.NewAuthenticatedDoaramaClient(c)
 	if err != nil {
 		return err
 	}
-	activityType, err := doarama.DefaultActivityTypes.Find(c.String("activitytype"))
+	activityType, err := doarama.DefaultActivityTypes.Find(doaramacli.ActivityType(c))
 	if err != nil {
 		return err
 	}
@@ -111,7 +53,7 @@ func activityCreate(c *cli.Context) error {
 
 func activityDelete(c *cli.Context) error {
 	ctx := context.Background()
-	client, err := newAuthenticatedDoaramaClient(c)
+	client, err := doaramacli.NewAuthenticatedDoaramaClient(c)
 	if err != nil {
 		return err
 	}
@@ -135,11 +77,11 @@ func activityDelete(c *cli.Context) error {
 
 func create(c *cli.Context) error {
 	ctx := context.Background()
-	client, err := newAuthenticatedDoaramaClient(c)
+	client, err := doaramacli.NewAuthenticatedDoaramaClient(c)
 	if err != nil {
 		return err
 	}
-	activityType, err := doarama.DefaultActivityTypes.Find(c.String("activitytype"))
+	activityType, err := doarama.DefaultActivityTypes.Find(doaramacli.ActivityType(c))
 	if err != nil {
 		return err
 	}
@@ -173,7 +115,7 @@ func create(c *cli.Context) error {
 		return err
 	}
 	fmt.Printf("VisualisationKey: %s\n", v.Key)
-	vuo := newVisualisationURLOptions(c)
+	vuo := doaramacli.NewVisualisationURLOptions(c)
 	fmt.Printf("VisualisationURL: %s\n", v.URL(vuo))
 	return nil
 }
@@ -186,7 +128,7 @@ func (ats byName) Swap(i, j int)      { ats[i], ats[j] = ats[j], ats[i] }
 
 func queryActivityTypes(c *cli.Context) error {
 	ctx := context.Background()
-	client := newDoaramaClient(c)
+	client := doaramacli.NewDoaramaClient(c)
 	ats, err := client.ActivityTypes(ctx)
 	if err != nil {
 		return err
@@ -200,7 +142,7 @@ func queryActivityTypes(c *cli.Context) error {
 
 func visualisationCreate(c *cli.Context) error {
 	ctx := context.Background()
-	client, err := newAuthenticatedDoaramaClient(c)
+	client, err := doaramacli.NewAuthenticatedDoaramaClient(c)
 	if err != nil {
 		return err
 	}
@@ -223,8 +165,8 @@ func visualisationCreate(c *cli.Context) error {
 }
 
 func visualisationURL(c *cli.Context) error {
-	client := newDoaramaClient(c)
-	vuo := newVisualisationURLOptions(c)
+	client := doaramacli.NewDoaramaClient(c)
+	vuo := doaramacli.NewVisualisationURLOptions(c)
 	for _, arg := range c.Args() {
 		v := client.Visualisation(arg)
 		fmt.Printf("VisualisationURL: %s\n", v.URL(vuo))
@@ -236,62 +178,7 @@ func main() {
 	app := cli.NewApp()
 	app.Name = "doarama"
 	app.Usage = "A command line interface to doarama.com"
-	app.Flags = []cli.Flag{
-		cli.StringFlag{
-			Name:   "apiurl",
-			Value:  doarama.DefaultAPIURL,
-			Usage:  "Doarama API URL",
-			EnvVar: "DOARAMA_API_URL",
-		},
-		cli.StringFlag{
-			Name:   "apikey",
-			Usage:  "Doarama API key",
-			EnvVar: "DOARAMA_API_KEY",
-		},
-		cli.StringFlag{
-			Name:   "apiname",
-			Usage:  "Doarama API name",
-			EnvVar: "DOARAMA_API_NAME",
-		},
-		cli.StringFlag{
-			Name:   "userid",
-			Usage:  "Doarama user ID",
-			EnvVar: "DOARAMA_USER_ID",
-		},
-		cli.StringFlag{
-			Name:   "userkey",
-			Usage:  "Doarama user key",
-			EnvVar: "DOARAMA_USER_KEY",
-		},
-	}
-	activityTypeFlag := cli.StringFlag{
-		Name:  "activitytype",
-		Usage: "activity type",
-	}
-	nameFlag := cli.StringSliceFlag{
-		Name:  "name",
-		Usage: "name",
-	}
-	avatarFlag := cli.StringSliceFlag{
-		Name:  "avatar",
-		Usage: "avatar",
-	}
-	avatarBaseURLFlag := cli.StringFlag{
-		Name:  "avatarbaseurl",
-		Usage: "avatar base URL",
-	}
-	fixedAspectFlag := cli.BoolFlag{
-		Name:  "fixedaspect",
-		Usage: "fixed aspect",
-	}
-	minimalViewFlag := cli.BoolFlag{
-		Name:  "minimalview",
-		Usage: "minimal view",
-	}
-	dzmlFlag := cli.StringFlag{
-		Name:  "dzml",
-		Usage: "DZML",
-	}
+	app.Flags = doaramacli.Flags
 	app.Commands = []cli.Command{
 		{
 			Name:    "activity",
@@ -303,9 +190,7 @@ func main() {
 					Aliases: []string{"c"},
 					Usage:   "Creates an activity from one or more tracklogs",
 					Action:  activityCreate,
-					Flags: []cli.Flag{
-						activityTypeFlag,
-					},
+					Flags:   []cli.Flag{doaramacli.ActivityTypeFlag},
 				},
 				{
 					Name:    "delete",
@@ -320,15 +205,7 @@ func main() {
 			Aliases: []string{"c"},
 			Usage:   "Creates a visualisation URL from one or more tracklogs",
 			Action:  create,
-			Flags: []cli.Flag{
-				activityTypeFlag,
-				nameFlag,
-				avatarFlag,
-				avatarBaseURLFlag,
-				fixedAspectFlag,
-				minimalViewFlag,
-				dzmlFlag,
-			},
+			Flags:   append([]cli.Flag{doaramacli.ActivityTypeFlag}, doaramacli.VisualisationFlags...),
 		},
 		{
 			Name:    "query-activity-types",
@@ -352,14 +229,7 @@ func main() {
 					Aliases: []string{"u"},
 					Usage:   "Creates a visualisation URL from a visualisation key",
 					Action:  visualisationURL,
-					Flags: []cli.Flag{
-						nameFlag,
-						avatarFlag,
-						avatarBaseURLFlag,
-						fixedAspectFlag,
-						minimalViewFlag,
-						dzmlFlag,
-					},
+					Flags:   doaramacli.VisualisationFlags,
 				},
 			},
 		},
