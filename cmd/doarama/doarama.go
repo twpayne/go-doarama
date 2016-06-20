@@ -108,7 +108,7 @@ func create(c *cli.Context) error {
 		return err
 	}
 	if len(as) == 0 {
-		return errors.New("no activitiess specified")
+		return errors.New("no activities specified")
 	}
 	v, err := client.CreateVisualisation(ctx, as)
 	if err != nil {
