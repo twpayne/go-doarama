@@ -15,13 +15,13 @@ import (
 	"golang.org/x/net/context"
 )
 
-func activityCreateOne(ctx context.Context, client *doarama.Client, filename string) (*doarama.Activity, error) {
+func activityCreateOne(ctx context.Context, client *doarama.Client, filename string, activityInfo *doarama.ActivityInfo) (*doarama.Activity, error) {
 	gpsTrack, err := os.Open(filename)
 	if err != nil {
 		return nil, err
 	}
 	defer gpsTrack.Close()
-	return client.CreateActivity(ctx, filepath.Base(filename), gpsTrack)
+	return client.CreateActivityWithInfo(ctx, filepath.Base(filename), gpsTrack, activityInfo)
 }
 
 func activityCreate(c *cli.Context) error {
@@ -34,19 +34,16 @@ func activityCreate(c *cli.Context) error {
 	if err != nil {
 		return err
 	}
+	activityInfo := &doarama.ActivityInfo{
+		TypeID: activityType.ID,
+	}
 	for _, arg := range c.Args() {
-		a, err := activityCreateOne(ctx, client, arg)
+		a, err := activityCreateOne(ctx, client, arg, activityInfo)
 		if err != nil {
 			log.Print(err)
 			continue
 		}
 		fmt.Printf("ActivityId: %d\n", a.ID)
-		if err := a.SetInfo(ctx, &doarama.ActivityInfo{
-			TypeID: activityType.ID,
-		}); err != nil {
-			log.Print(err)
-			continue
-		}
 	}
 	return nil
 }
@@ -85,16 +82,13 @@ func create(c *cli.Context) error {
 	if err != nil {
 		return err
 	}
+	activityInfo := &doarama.ActivityInfo{
+		TypeID: activityType.ID,
+	}
 	var as []*doarama.Activity
 	for _, arg := range c.Args() {
 		var a *doarama.Activity
-		a, err = activityCreateOne(ctx, client, arg)
-		if err != nil {
-			break
-		}
-		err = a.SetInfo(ctx, &doarama.ActivityInfo{
-			TypeID: activityType.ID,
-		})
+		a, err = activityCreateOne(ctx, client, arg, activityInfo)
 		if err != nil {
 			break
 		}
