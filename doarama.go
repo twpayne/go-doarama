@@ -305,6 +305,17 @@ func (c *Client) CreateActivity(ctx context.Context, filename string, gpsTrack i
 	}, nil
 }
 
+// CreateActivityWithInfo creates a new doarama.Activity with the specified
+// doarama.ActivityInfo.
+func (c *Client) CreateActivityWithInfo(ctx context.Context, filename string, gpsTrack io.Reader, activityInfo *ActivityInfo) (*Activity, error) {
+	activity, err := c.CreateActivity(ctx, filename, gpsTrack)
+	if err != nil {
+		return activity, err
+	}
+	err = activity.SetInfo(ctx, activityInfo)
+	return activity, err
+}
+
 // CreateLiveActivity creates a new live activity.
 func (c *Client) CreateLiveActivity(ctx context.Context, startLatitude, startLongitude float64, startTime Timestamp) (*Activity, error) {
 	var data = struct {
