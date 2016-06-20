@@ -9,8 +9,8 @@ import (
 	"sort"
 	"strconv"
 
-	"github.com/codegangsta/cli"
 	"github.com/twpayne/go-doarama"
+	"github.com/urfave/cli"
 	"golang.org/x/net/context"
 )
 
