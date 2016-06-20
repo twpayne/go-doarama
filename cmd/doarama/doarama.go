@@ -31,6 +31,7 @@ func activityCreate(c *cli.Context) error {
 	if err != nil {
 		return err
 	}
+	defer client.Close()
 	activityType, err := doarama.DefaultActivityTypes.Find(doaramacli.ActivityType(c))
 	if err != nil {
 		return err
@@ -55,6 +56,7 @@ func activityDelete(c *cli.Context) error {
 	if err != nil {
 		return err
 	}
+	defer client.Close()
 	var ids []int
 	for _, arg := range c.Args() {
 		id64, err := strconv.ParseInt(arg, 10, 0)
@@ -79,6 +81,7 @@ func create(c *cli.Context) error {
 	if err != nil {
 		return err
 	}
+	defer client.Close()
 	activityType, err := doarama.DefaultActivityTypes.Find(doaramacli.ActivityType(c))
 	if err != nil {
 		return err
@@ -124,6 +127,7 @@ func (ats byName) Swap(i, j int)      { ats[i], ats[j] = ats[j], ats[i] }
 func queryActivityTypes(c *cli.Context) error {
 	ctx := context.Background()
 	client := doaramacli.NewDoaramaClient(c)
+	defer client.Close()
 	ats, err := client.ActivityTypes(ctx)
 	if err != nil {
 		return err
@@ -141,6 +145,7 @@ func visualisationCreate(c *cli.Context) error {
 	if err != nil {
 		return err
 	}
+	defer client.Close()
 	var as []*doarama.Activity
 	for _, arg := range c.Args() {
 		var id64 int64

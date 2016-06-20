@@ -274,6 +274,11 @@ func (c *Client) Activity(id int) *Activity {
 	}
 }
 
+// Close releases any associated resources.
+func (c *Client) Close() error {
+	return nil
+}
+
 // CreateActivity creates a new activity.
 func (c *Client) CreateActivity(ctx context.Context, filename string, gpsTrack io.Reader) (*Activity, error) {
 	var b bytes.Buffer
