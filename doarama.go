@@ -133,8 +133,8 @@ func (ats ActivityTypes) FindByID(id int) (ActivityType, bool) {
 
 // An Activity represents an activity on the server.
 type Activity struct {
-	c  *Client
-	ID int
+	Client *Client
+	ID     int
 }
 
 // A Coords represents a coordinate.
@@ -160,8 +160,8 @@ type Sample struct {
 
 // A Visualisation represents a visualisation on the server.
 type Visualisation struct {
-	c   *Client
-	Key string `json:"key"`
+	Client *Client
+	Key    string `json:"key"`
 }
 
 // A VisualisationURLOptions represents the options that can be set for a
@@ -269,8 +269,8 @@ func (c *Client) ActivityTypes(ctx context.Context) (ActivityTypes, error) {
 // Activity returns the activity with the specified id.
 func (c *Client) Activity(id int) *Activity {
 	return &Activity{
-		c:  c,
-		ID: id,
+		Client: c,
+		ID:     id,
 	}
 }
 
@@ -305,8 +305,8 @@ func (c *Client) CreateActivity(ctx context.Context, filename string, gpsTrack i
 		return nil, err
 	}
 	return &Activity{
-		c:  c,
-		ID: data.ID,
+		Client: c,
+		ID:     data.ID,
 	}, nil
 }
 
@@ -337,7 +337,7 @@ func (c *Client) CreateLiveActivity(ctx context.Context, startLatitude, startLon
 		return nil, err
 	}
 	a := &Activity{
-		c: c,
+		Client: c,
 	}
 	if err := c.doRequest(ctx, req, a); err != nil {
 		return nil, err
@@ -359,7 +359,7 @@ func (c *Client) CreateVisualisation(ctx context.Context, activities []*Activity
 	if err != nil {
 		return nil, err
 	}
-	v := &Visualisation{c: c}
+	v := &Visualisation{Client: c}
 	if err := c.doRequest(ctx, req, v); err != nil {
 		return nil, err
 	}
@@ -369,8 +369,8 @@ func (c *Client) CreateVisualisation(ctx context.Context, activities []*Activity
 // Visualisation returns the visualisation with the specified key.
 func (c *Client) Visualisation(key string) *Visualisation {
 	return &Visualisation{
-		c:   c,
-		Key: key,
+		Client: c,
+		Key:    key,
 	}
 }
 
@@ -420,11 +420,11 @@ func Delegate(userKey string) Option {
 
 // Delete deletes the activity.
 func (a *Activity) Delete(ctx context.Context) error {
-	req, err := a.c.newRequest("DELETE", a.URL(), nil)
+	req, err := a.Client.newRequest("DELETE", a.URL(), nil)
 	if err != nil {
 		return err
 	}
-	if err := a.c.doRequest(ctx, req, nil); err != nil {
+	if err := a.Client.doRequest(ctx, req, nil); err != nil {
 		return err
 	}
 	return nil
@@ -442,11 +442,11 @@ func (a *Activity) Record(ctx context.Context, samples []*Sample, altitudeRefere
 		ActivityID:        a.ID,
 		AltitudeReference: altitudeReference,
 	}
-	req, err := a.c.newRequestJSON("POST", a.c.apiURL+"/activity/record", &data)
+	req, err := a.Client.newRequestJSON("POST", a.Client.apiURL+"/activity/record", &data)
 	if err != nil {
 		return err
 	}
-	if err := a.c.doRequest(ctx, req, nil); err != nil {
+	if err := a.Client.doRequest(ctx, req, nil); err != nil {
 		return err
 	}
 	return nil
@@ -454,11 +454,11 @@ func (a *Activity) Record(ctx context.Context, samples []*Sample, altitudeRefere
 
 // SetInfo sets the info.
 func (a *Activity) SetInfo(ctx context.Context, activityInfo *ActivityInfo) error {
-	req, err := a.c.newRequestJSON("POST", a.URL(), activityInfo)
+	req, err := a.Client.newRequestJSON("POST", a.URL(), activityInfo)
 	if err != nil {
 		return err
 	}
-	if err := a.c.doRequest(ctx, req, nil); err != nil {
+	if err := a.Client.doRequest(ctx, req, nil); err != nil {
 		return err
 	}
 	return nil
@@ -466,7 +466,7 @@ func (a *Activity) SetInfo(ctx context.Context, activityInfo *ActivityInfo) erro
 
 // URL returns the URL for the activity.
 func (a *Activity) URL() string {
-	return a.c.apiURL + "/activity/" + strconv.Itoa(a.ID)
+	return a.Client.apiURL + "/activity/" + strconv.Itoa(a.ID)
 }
 
 // AddActivities adds the activities to the visualisation.
@@ -481,11 +481,11 @@ func (v *Visualisation) AddActivities(ctx context.Context, activities []*Activit
 	for i, activity := range activities {
 		data.ActivityIds[i] = activity.ID
 	}
-	req, err := v.c.newRequestJSON("POST", v.c.apiURL+"/visualisation/addActivities", &data)
+	req, err := v.Client.newRequestJSON("POST", v.Client.apiURL+"/visualisation/addActivities", &data)
 	if err != nil {
 		return err
 	}
-	if err := v.c.doRequest(ctx, req, nil); err != nil {
+	if err := v.Client.doRequest(ctx, req, nil); err != nil {
 		return err
 	}
 	return nil
@@ -493,7 +493,7 @@ func (v *Visualisation) AddActivities(ctx context.Context, activities []*Activit
 
 // URL returns a URL with the specificed options.
 func (v *Visualisation) URL(vo *VisualisationURLOptions) *url.URL {
-	u, err := url.Parse(v.c.apiURL + "/visualisation")
+	u, err := url.Parse(v.Client.apiURL + "/visualisation")
 	if err != nil {
 		panic(err)
 	}
