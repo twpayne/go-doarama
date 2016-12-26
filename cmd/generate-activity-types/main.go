@@ -27,7 +27,7 @@ var tmpl = template.Must(template.New("gat").Parse("" +
 	"{{range $at := .ActivityTypes}}\t{ID: {{$at.ID}}, Name: {{$at.Name | printf \"%#v\"}}},\n" +
 	"{{end}}}\n" +
 	"\n" +
-	"//go:generate go run cmd/generate-activity-types/generate-activity-types.go -o {{.Filename}}\n",
+	"//go:generate go run cmd/generate-activity-types/main.go -o {{.Filename}}\n",
 ))
 
 func constantize(s string) ([]string, error) {
