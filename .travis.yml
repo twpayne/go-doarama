@@ -9,7 +9,5 @@ install:
         - go get github.com/mattn/go-sqlite3
         - go get github.com/twpayne/go-gpx
         - go get github.com/urfave/cli
-        - go get golang.org/x/net/context
-        - go get golang.org/x/net/context/ctxhttp
 
 sudo: false

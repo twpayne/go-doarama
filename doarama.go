@@ -4,6 +4,7 @@ package doarama
 
 import (
 	"bytes"
+	"context"
 	"encoding/json"
 	"fmt"
 	"io"
@@ -14,9 +15,6 @@ import (
 	"strconv"
 	"strings"
 	"time"
-
-	"golang.org/x/net/context"
-	"golang.org/x/net/context/ctxhttp"
 )
 
 // DefaultAPIURL is the default Doarama API endpoint.
@@ -225,7 +223,8 @@ func (c *Client) newRequestJSON(method, urlStr string, v interface{}) (*http.Req
 
 // doRequest performs an HTTP request and unmarshals the JSON response.
 func (c *Client) doRequest(ctx context.Context, req *http.Request, v interface{}) error {
-	resp, err := ctxhttp.Do(ctx, c.httpClient, req)
+	req = req.WithContext(ctx)
+	resp, err := c.httpClient.Do(req)
 	if err != nil {
 		return err
 	}

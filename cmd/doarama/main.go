@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"errors"
 	"fmt"
 	"log"
@@ -14,7 +15,6 @@ import (
 	"github.com/twpayne/go-doarama/doaramacache"
 	"github.com/twpayne/go-doarama/doaramacli"
 	"github.com/urfave/cli"
-	"golang.org/x/net/context"
 
 	_ "github.com/mattn/go-sqlite3"
 )

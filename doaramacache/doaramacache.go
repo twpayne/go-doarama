@@ -2,10 +2,10 @@
 package doaramacache
 
 import (
+	"context"
 	"io"
 
 	"github.com/twpayne/go-doarama"
-	"golang.org/x/net/context"
 )
 
 // An ActivityCreator can create activities.

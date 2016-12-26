@@ -1,12 +1,12 @@
 package doarama_test
 
 import (
+	"context"
 	"log"
 	"os"
 	"path/filepath"
 
 	"github.com/twpayne/go-doarama"
-	"golang.org/x/net/context"
 )
 
 func Example() {

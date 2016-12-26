@@ -2,6 +2,7 @@ package doaramacache
 
 import (
 	"bytes"
+	"context"
 	"crypto/sha256"
 	"database/sql"
 	"io"
@@ -9,7 +10,6 @@ import (
 
 	"github.com/cnf/structhash"
 	"github.com/twpayne/go-doarama"
-	"golang.org/x/net/context"
 )
 
 type sqlite struct {

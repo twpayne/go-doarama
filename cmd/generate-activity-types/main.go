@@ -2,6 +2,7 @@
 package main
 
 import (
+	"context"
 	"flag"
 	"fmt"
 	"log"
@@ -11,7 +12,6 @@ import (
 	"text/template"
 
 	"github.com/twpayne/go-doarama"
-	"golang.org/x/net/context"
 )
 
 var tmpl = template.Must(template.New("gat").Parse("" +
