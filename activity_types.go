@@ -94,4 +94,4 @@ var DefaultActivityTypes = ActivityTypes{
 	{ID: 35, Name: "Fly - Hike + Glide"},
 }
 
-//go:generate go run cmd/generate-activity-types/generate-activity-types.go -o activity_types.go
+//go:generate go run cmd/generate-activity-types/main.go -o activity_types.go
