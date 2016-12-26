@@ -197,9 +197,15 @@ func (c *Client) newRequest(method, urlStr string, body io.Reader) (*http.Reques
 		return nil, err
 	}
 	req.Header.Set("Accept", "application/json")
-	req.Header.Set("api-name", c.apiName)
-	req.Header.Set("api-key", c.apiKey)
-	req.Header.Set(c.userHeader, c.user)
+	if c.apiName != "" {
+		req.Header.Set("api-name", c.apiName)
+	}
+	if c.apiKey != "" {
+		req.Header.Set("api-key", c.apiKey)
+	}
+	if c.userHeader != "" && c.user != "" {
+		req.Header.Set(c.userHeader, c.user)
+	}
 	return req, nil
 }
 
