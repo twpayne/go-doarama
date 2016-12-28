@@ -12,10 +12,13 @@ import (
 	"mime/multipart"
 	"net/http"
 	"net/url"
+	"runtime"
 	"strconv"
 	"strings"
 	"time"
 )
+
+const Version = "0.2"
 
 // DefaultAPIURL is the default Doarama API endpoint.
 const DefaultAPIURL = "https://api.doarama.com/api/0.2"
@@ -63,6 +66,7 @@ type Client struct {
 	apiKey     string
 	apiURL     string
 	httpClient *http.Client
+	userAgent  string
 	userHeader string
 	user       string
 }
@@ -181,6 +185,7 @@ func NewClient(options ...Option) *Client {
 	c := &Client{
 		apiURL:     DefaultAPIURL,
 		httpClient: &http.Client{},
+		userAgent:  defaultUserAgent(),
 	}
 	for _, option := range options {
 		option(c)
@@ -203,6 +208,9 @@ func (c *Client) newRequest(method, urlStr string, body io.Reader) (*http.Reques
 	}
 	if c.userHeader != "" && c.user != "" {
 		req.Header.Set(c.userHeader, c.user)
+	}
+	if c.userAgent != "" {
+		req.Header.Set("User-Agent", c.userAgent)
 	}
 	return req, nil
 }
@@ -423,6 +431,13 @@ func Delegate(userKey string) Option {
 	}
 }
 
+// UserAgent sets the user agent.
+func UserAgent(userAgent string) Option {
+	return func(c *Client) {
+		c.userAgent = userAgent
+	}
+}
+
 // Delete deletes the activity.
 func (a *Activity) Delete(ctx context.Context) error {
 	req, err := a.Client.newRequest("DELETE", a.URL(), nil)
@@ -540,4 +555,8 @@ func NewTimestamp(t time.Time) Timestamp {
 // Time returns ts as a time.Time.
 func (ts Timestamp) Time() time.Time {
 	return time.Unix(int64(ts)/1000, int64(ts)%1000*1000000).UTC()
+}
+
+func defaultUserAgent() string {
+	return fmt.Sprintf("go-doarama/%v (https://github.com/twpayne/go-doarama) %s (%s/%s)", Version, runtime.Version(), runtime.GOOS, runtime.GOARCH)
 }
