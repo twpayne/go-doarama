@@ -177,11 +177,11 @@ type VisualisationURLOptions struct {
 	DZML          string
 }
 
-// An Option sets an option on a client.
-type Option func(*Client)
+// An ClientOption sets an option on a client.
+type ClientOption func(*Client)
 
 // NewClient creates a new unauthenticated Doarama client.
-func NewClient(options ...Option) *Client {
+func NewClient(options ...ClientOption) *Client {
 	c := &Client{
 		apiURL:     DefaultAPIURL,
 		httpClient: &http.Client{},
@@ -388,7 +388,7 @@ func (c *Client) Visualisation(key string) *Visualisation {
 }
 
 // Anonymous sets anonymous authentication.
-func Anonymous(userID string) Option {
+func Anonymous(userID string) ClientOption {
 	return func(c *Client) {
 		c.userHeader = "user-id"
 		c.user = userID
@@ -396,35 +396,35 @@ func Anonymous(userID string) Option {
 }
 
 // APIName sets the API name.
-func APIName(apiName string) Option {
+func APIName(apiName string) ClientOption {
 	return func(c *Client) {
 		c.apiName = apiName
 	}
 }
 
 // APIKey sets the API key.
-func APIKey(apiKey string) Option {
+func APIKey(apiKey string) ClientOption {
 	return func(c *Client) {
 		c.apiKey = apiKey
 	}
 }
 
 // APIURL sets the API URL.
-func APIURL(apiURL string) Option {
+func APIURL(apiURL string) ClientOption {
 	return func(c *Client) {
 		c.apiURL = apiURL
 	}
 }
 
 // HTTPClient sets the http.Client used for requests.
-func HTTPClient(httpClient *http.Client) Option {
+func HTTPClient(httpClient *http.Client) ClientOption {
 	return func(c *Client) {
 		c.httpClient = httpClient
 	}
 }
 
 // Delegate sets delegate authentication.
-func Delegate(userKey string) Option {
+func Delegate(userKey string) ClientOption {
 	return func(c *Client) {
 		c.userHeader = "user-key"
 		c.user = userKey
@@ -432,7 +432,7 @@ func Delegate(userKey string) Option {
 }
 
 // UserAgent sets the user agent.
-func UserAgent(userAgent string) Option {
+func UserAgent(userAgent string) ClientOption {
 	return func(c *Client) {
 		c.userAgent = userAgent
 	}

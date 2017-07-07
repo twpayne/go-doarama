@@ -79,8 +79,8 @@ func ActivityType(c *cli.Context) string {
 }
 
 // BaseDoaramaOptions returns the doarama.Options from c.
-func BaseDoaramaOptions(c *cli.Context) []doarama.Option {
-	return []doarama.Option{
+func BaseDoaramaOptions(c *cli.Context) []doarama.ClientOption {
+	return []doarama.ClientOption{
 		doarama.APIURL(c.GlobalString("apiurl")),
 		doarama.APIName(c.GlobalString("apiname")),
 		doarama.APIKey(c.GlobalString("apikey")),
@@ -95,7 +95,7 @@ func NewDoaramaClient(c *cli.Context) *doarama.Client {
 
 // NewAuthenticatedDoaramaOptions returns the doaram.Options for an
 // authenticated doarama.Client from c.
-func NewAuthenticatedDoaramaOptions(c *cli.Context) ([]doarama.Option, error) {
+func NewAuthenticatedDoaramaOptions(c *cli.Context) ([]doarama.ClientOption, error) {
 	options := BaseDoaramaOptions(c)
 	userID := c.GlobalString("userid")
 	userKey := c.GlobalString("userkey")
