@@ -6,34 +6,24 @@ import (
 	"fmt"
 	"log"
 	"os"
-	"path"
 	"path/filepath"
 	"sort"
 	"strconv"
 
 	"github.com/twpayne/go-doarama"
-	"github.com/twpayne/go-doarama/doaramacache"
 	"github.com/twpayne/go-doarama/doaramacli"
 	"github.com/urfave/cli"
 
 	_ "github.com/mattn/go-sqlite3"
 )
 
-func newCache(c *cli.Context, client *doarama.Client) (doaramacache.ActivityCreator, error) {
-	dataSourceName := c.GlobalString("cache")
-	if dataSourceName == "" {
-		return client, nil
-	}
-	return doaramacache.NewSQLite3(dataSourceName, client)
-}
-
-func activityCreateOne(ctx context.Context, cache doaramacache.ActivityCreator, filename string, activityInfo *doarama.ActivityInfo) (*doarama.Activity, error) {
+func activityCreateOne(ctx context.Context, client *doarama.Client, filename string, activityInfo *doarama.ActivityInfo) (*doarama.Activity, error) {
 	gpsTrack, err := os.Open(filename)
 	if err != nil {
 		return nil, err
 	}
 	defer gpsTrack.Close()
-	return cache.CreateActivityWithInfo(ctx, filepath.Base(filename), gpsTrack, activityInfo)
+	return client.CreateActivityWithInfo(ctx, filepath.Base(filename), gpsTrack, activityInfo)
 }
 
 func activityCreate(c *cli.Context) error {
@@ -50,13 +40,8 @@ func activityCreate(c *cli.Context) error {
 	activityInfo := &doarama.ActivityInfo{
 		TypeID: activityType.ID,
 	}
-	cache, err := newCache(c, client)
-	if err != nil {
-		return err
-	}
-	defer cache.Close()
 	for _, arg := range c.Args() {
-		a, err := activityCreateOne(ctx, cache, arg, activityInfo)
+		a, err := activityCreateOne(ctx, client, arg, activityInfo)
 		if err != nil {
 			log.Print(err)
 			continue
@@ -105,15 +90,10 @@ func create(c *cli.Context) error {
 	activityInfo := &doarama.ActivityInfo{
 		TypeID: activityType.ID,
 	}
-	cache, err := newCache(c, client)
-	if err != nil {
-		return err
-	}
-	defer cache.Close()
 	var as []*doarama.Activity
 	for _, arg := range c.Args() {
 		var a *doarama.Activity
-		a, err = activityCreateOne(ctx, cache, arg, activityInfo)
+		a, err = activityCreateOne(ctx, client, arg, activityInfo)
 		if err != nil {
 			break
 		}
@@ -199,13 +179,7 @@ func main() {
 	app := cli.NewApp()
 	app.Name = "doarama"
 	app.Usage = "A command line interface to doarama.com"
-	app.Flags = append([]cli.Flag{
-		cli.StringFlag{
-			Name:  "cache",
-			Usage: "Path to cache",
-			Value: path.Join(os.Getenv("HOME"), ".doaramacache.db"),
-		},
-	}, doaramacli.Flags...)
+	app.Flags = doaramacli.Flags
 	app.Commands = []cli.Command{
 		{
 			Name:    "activity",
