@@ -1,3 +1,7 @@
+# DEPRECATED
+
+On 2018-08-31, doarama.com moves to [ayvri.com](https://ayvri.com/) with a [new API](https://ayvri.com/pages/api). This client for the Doarama API is deprecated.
+
 # go-doarama
 
 [![Build Status](https://travis-ci.org/twpayne/go-doarama.svg?branch=master)](https://travis-ci.org/twpayne/go-doarama)
