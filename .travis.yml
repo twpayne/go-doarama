@@ -5,7 +5,7 @@ go:
 
 install:
         - go get github.com/cnf/structhash
-        - go get github.com/golang/lint/golint
+        - go get golang.org/x/lint/golint
         - go get github.com/mattn/go-sqlite3
         - go get github.com/twpayne/go-gpx
         - go get github.com/urfave/cli
