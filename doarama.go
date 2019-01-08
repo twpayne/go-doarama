@@ -236,11 +236,9 @@ func (c *Client) doRequest(ctx context.Context, req *http.Request, v interface{}
 	if err != nil {
 		return err
 	}
+	defer resp.Body.Close()
 	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
-		return err
-	}
-	if err := resp.Body.Close(); err != nil {
 		return err
 	}
 	if resp.StatusCode < 200 || 300 <= resp.StatusCode {
